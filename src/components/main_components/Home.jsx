@@ -9,131 +9,160 @@ import LeftSide from "../sideComponents/LeftSide";
 import RightSide from "../sideComponents/RightSide";
 
 class Home extends React.Component {
-	// fetch posts here
-	// pass fetch func to down make post
-	state = {
-		showModal: true,
-		post: { text: "" },
-		showPost: true,
-		postSize: 0,
+  // fetch posts here
+  // pass fetch func to down make post
+  state = {
+    showModal: true,
+    post: { text: "" },
+    showPost: true,
+    postSize: 0,
 
-		formData: null,
-		addImageModalShow: false,
-	};
+    formData: null,
+    addImageModalShow: false,
 
-	saveImage = () => {
-		const inputFile = document.querySelector("#post-image-upload-file");
+    postList: [],
+    isLoading: true,
+  };
 
-		let formData = new FormData();
-		formData.append("post", inputFile.files[0]);
+  getPosts = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/posts`);
 
-		this.setState({ formData }, () => {
-			this.setState({ addImageModalShow: false });
-		});
-	};
+      if (response.ok) {
+        const posts = await response.json();
+        console.log("posts", posts);
+        this.setState({
+          postList: posts.reverse().slice(0, 50),
+          isLoading: false,
+        });
+      }
+    } catch (err) {
+      this.setState({ isLoading: false });
+      console.log(err);
+    }
+  };
 
-	uploadImage = async (postId) => {
-		try {
-			let response = await fetch(
-				`https://striveschool-api.herokuapp.com/api/posts/${postId}`,
-				{
-					method: "POST",
-					body: this.state.formData,
-					headers: new Headers({
-						// "Content-Type": "multipart/form-data",
-						Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-					}),
-				}
-			);
+  saveImage = () => {
+    const inputFile = document.querySelector("#post-image-upload-file");
 
-			if (response.ok) {
-				const data = await response.json();
-			}
-		} catch (e) {
-			console.log(e);
-		}
-	};
+    let formData = new FormData();
+    formData.append("post", inputFile.files[0]);
 
-	fetchPost = async () => {
-		let response = await fetch(process.env.REACT_APP_BASE_URL + `posts/`, {
-			method: "POST",
-			body: JSON.stringify(this.state.post),
-			headers: new Headers({
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-			}),
-		});
-		let result = await response.json();
+    this.setState({ formData }, () => {
+      this.setState({ addImageModalShow: false });
+    });
+  };
 
-		let imageUpload = await this.uploadImage(result._id);
-	};
+  uploadImage = async (postId) => {
+    try {
+      let response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/posts/${postId}/picture`,
+        {
+          method: "POST",
+          body: this.state.formData,
+          headers: new Headers({
+            // "Content-Type": "multipart/form-data",
+          }),
+        }
+      );
 
-	postConfirm = () => {
-		this.fetchPost();
+      if (response.ok) {
+        const data = await response.json();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-		setTimeout(() => {
-			this.showModal();
-			this.setState({ postSize: this.state.postSize + 1 });
-		}, 100);
-	};
+  fetchPost = async () => {
+    let response = await fetch(
+      process.env.REACT_APP_BASE_URL + `/posts/600eab3b9257344464c04d3d`,
+      {
+        method: "POST",
+        body: JSON.stringify(this.state.post),
+        headers: new Headers({
+          "Content-Type": "application/json",
+        }),
+      }
+    );
+    let result = await response.json();
 
-	showModal = () => {
-		this.setState({ showModal: !this.state.showModal });
-	};
+    let imageUpload = await this.uploadImage(result._id);
+  };
 
-	fillUp = (e) => {
-		let text = "";
-		text = e.currentTarget.value;
-		if (text.length > 0) {
-			this.setState({ showPost: false });
-		} else {
-			this.setState({ showPost: true });
-		}
-		this.setState({ post: { text: text } });
-	};
+  postConfirm = async () => {
+    await this.fetchPost();
 
-	render() {
-		let showModal = this.state.showModal ? "-200vh" : "";
-		let showPost = this.state.showPost ? "grey" : "#0078b9";
-		let canClick = this.state.showPost ? "none" : "all";
-		return (
-			<div id='home-page'>
-				<Container>
-					<Row>
-						<Col xs={3}>
-							<LeftSide />
-						</Col>
-						<Col xs={6}>
-							<MakePost
-								addImageModalShow={this.state.addImageModalShow}
-								onHide={() =>
-									this.setState({ addImageModalShow: false })
-								}
-								showImageModal={() =>
-									this.setState({ addImageModalShow: true })
-								}
-								saveImage={this.saveImage}
-								show={showModal}
-								showFunction={this.showModal}
-								fillFunction={this.fillUp}
-								postFunction={this.postConfirm}
-								showPost={showPost}
-								clickable={canClick}
-								onClick={this.showModal}
-							/>
-							<Posts
-								showDelete={this.state}
-								postSize={this.state.postSize}
-							/>
-						</Col>
-						<Col xs={3}>
-							<RightSide />
-						</Col>
-					</Row>
-				</Container>
-			</div>
-		);
-	}
+    setTimeout(() => {
+      this.showModal();
+      this.setState({ postSize: this.state.postSize + 1, isLoading: true });
+    }, 100);
+    setTimeout(async () => {
+      await this.getPosts();
+    }, 1000);
+  };
+
+  showModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
+
+  fillUp = (e) => {
+    let text = "";
+    text = e.currentTarget.value;
+    if (text.length > 0) {
+      this.setState({ showPost: false });
+    } else {
+      this.setState({ showPost: true });
+    }
+    this.setState({ post: { text: text } });
+  };
+
+  componentDidMount() {
+    this.getPosts();
+  }
+
+  render() {
+    let showModal = this.state.showModal ? "-200vh" : "";
+    let showPost = this.state.showPost ? "grey" : "#0078b9";
+    let canClick = this.state.showPost ? "none" : "all";
+    return (
+      <div id="home-page">
+        <Container>
+          <Row>
+            <Col xs={3}>
+              <LeftSide />
+            </Col>
+            <Col xs={6}>
+              <MakePost
+                addImageModalShow={this.state.addImageModalShow}
+                onHide={() => this.setState({ addImageModalShow: false })}
+                showImageModal={() =>
+                  this.setState({ addImageModalShow: true })
+                }
+                saveImage={this.saveImage}
+                show={showModal}
+                showFunction={this.showModal}
+                fillFunction={this.fillUp}
+                postFunction={this.postConfirm}
+                showPost={showPost}
+                clickable={canClick}
+                onClick={this.showModal}
+              />
+              <Posts
+                showDelete={this.state}
+                postSize={this.state.postSize}
+                posts={this.state.postList}
+                isLoading={this.state.isLoading}
+              />
+            </Col>
+            <Col xs={3}>
+              <RightSide />
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default Home;
