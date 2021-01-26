@@ -1,0 +1,15 @@
+@mixin borderRadius($radius) {
+    border-radius: $radius;
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+}
+
+@mixin translate($x-axis, $y-axis){
+    transform: translate($x-axis, $y-axis);
+    -webkit-transform: translate($x-axis, $y-axis);
+    -moz-transform: translate($x-axis, $y-axis);
+    -ms-transform: translate($x-axis, $y-axis);
+    -o-transform: translate($x-axis, $y-axis);
+}

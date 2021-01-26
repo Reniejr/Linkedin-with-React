@@ -16,6 +16,7 @@ import JobsPage from "./components/Jobs_Compnents/JobsPage";
 import MsgPage from "./components/Messaging_Component/MsgPage";
 import ProtectedRoute from "./components/authComponents/ProtectedRoute";
 import NotRegistered from "./components/authComponents/NotRegistered";
+import LinkedinNav from "./components/main_components/LinkedinNav/LinkedinNav";
 
 class App extends React.Component {
   state = {
@@ -78,13 +79,12 @@ class App extends React.Component {
             onHide={() => this.setState({ showResult: false })}
             show={this.state.showResult}
           />
-          <NavBar
+          <LinkedinNav
             searchString={this.state.searchString}
-            handleSearch={this.handleSearch}
-          />
+            handleSearch={this.handleSearch}/>
 
           <ProtectedRoute path="/" exact component={Home} />
-          <ProtectedRoute path="/profile/:id" component={Profile} />
+          <Route path="/profile/:id" component={Profile} />
           <Route
             path="/mynetwork"
             render={(props) => <NetworkPage userList={this.state.userList} />}
