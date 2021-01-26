@@ -3,6 +3,7 @@ import "./Messaging_Styles/MainMsg.scss";
 
 export default class MainMsg extends PureComponent {
   render() {
+    const { currentUser } = this.props;
     return (
       <div id="main-msg">
         <header>New Message</header>
@@ -10,9 +11,29 @@ export default class MainMsg extends PureComponent {
         <div className="msg-dialog">
           {this.props.chat.map((msg) => {
             return (
-              <p>
-                {msg.username} {msg.message}
-              </p>
+              <div
+                className="text"
+                style={{
+                  alignItems:
+                    currentUser === msg.username ? "flex-end" : "flex-start",
+                }}
+              >
+                <p
+                  style={{
+                    color: currentUser === msg.username ? "blue" : "green",
+                  }}
+                >
+                  {msg.username}
+                </p>
+                <span
+                  style={{
+                    backgroundColor:
+                      currentUser === msg.username ? "blue" : "lime",
+                  }}
+                >
+                  {msg.message}
+                </span>
+              </div>
             );
           })}
         </div>

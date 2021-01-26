@@ -56,7 +56,7 @@ export default class LinkedinNav extends PureComponent {
               </Link>
             </li>
             <li>
-              <Link to="/message">
+              <Link to={`/message/me`}>
                 <i className="nav-icons far fa-comment-dots"></i>
                 <span>Messaging</span>
               </Link>
@@ -73,7 +73,9 @@ export default class LinkedinNav extends PureComponent {
                 <span>Me</span>
                 <DropDown show={this.state.dropdown}>
                   <li>
-                    <Link to="/profile/me">View Profile</Link>
+                    <Link to={`/profile/${process.env.REACT_APP_ID}`}>
+                      View Profile
+                    </Link>
                   </li>
                   <li>
                     <LogoutButton />

@@ -5,10 +5,11 @@ import "../css/RightSide.scss";
 import MsgSide from "./MsgSide";
 import footericon from "../images/footericon.png";
 import Pusher from "pusher-js";
-import { getUser, postMessage } from "./Utils/index";
+import { getUser } from "./Utils/index";
 import axios from "axios";
+import { withAuth0 } from "@auth0/auth0-react";
 
-export default class MsgPage extends PureComponent {
+class MsgPage extends PureComponent {
   state = {
     text: "",
     username: "",
@@ -16,7 +17,11 @@ export default class MsgPage extends PureComponent {
   };
 
   setUser = async () => {
-    const user = await getUser("600eab3b9257344464c04d3d");
+    let id;
+    this.props.match.params.id === "me"
+      ? (id = process.env.REACT_APP_ID)
+      : (id = process.env.REACT_APP_ID);
+    const user = await getUser(`${id}`);
     this.setState({ username: user.username });
   };
 
@@ -51,7 +56,11 @@ export default class MsgPage extends PureComponent {
       <div id="msg-page">
         <div className="main-body">
           <MsgSide />
-          <MainMsg typeFunc={this.typeText} chat={this.state.chats} />
+          <MainMsg
+            typeFunc={this.typeText}
+            chat={this.state.chats}
+            currentUser={this.state.username}
+          />
         </div>
         <div id="footer-right" style={{ position: "sticky", top: "60px" }}>
           <div className="links-footer-right">
@@ -76,3 +85,4 @@ export default class MsgPage extends PureComponent {
     );
   }
 }
+export default withAuth0(MsgPage);
