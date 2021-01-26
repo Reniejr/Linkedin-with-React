@@ -29,7 +29,7 @@ class App extends React.Component {
   getUserList = async () => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + "profile/",
+        process.env.REACT_APP_BASE_URL + "/profile/",
         {
           headers: {
             Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,

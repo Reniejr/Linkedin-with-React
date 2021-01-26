@@ -11,7 +11,7 @@ class Posts extends Component {
 
       if (response.ok) {
         const posts = await response.json();
-        console.log("posts", posts);
+        console.log("posts", posts.user);
         this.setState({
           posts: posts.reverse().slice(0, 50),
           isLoading: false,
@@ -50,7 +50,7 @@ class Posts extends Component {
           />
         )}
         {posts.map((post) => {
-          return <PostContent id={post._id} key={post._id} post={post} />;
+          return <PostContent id={post._id} key={post._id} post={post.user} />;
         })}
       </div>
     );
