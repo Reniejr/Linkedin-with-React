@@ -84,7 +84,7 @@ class App extends React.Component {
           />
 
           <ProtectedRoute path="/" exact component={Home} />
-          <ProtectedRoute path="/profile/:id" component={Profile} />
+          <Route path="/profile/:id" component={Profile} />
           <Route
             path="/mynetwork"
             render={(props) => <NetworkPage userList={this.state.userList} />}
