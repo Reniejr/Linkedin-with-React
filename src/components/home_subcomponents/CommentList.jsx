@@ -53,7 +53,7 @@ class CommentList extends React.Component {
 
       if (response.ok) {
         let comments = await response.json();
-        console.log(comments);
+        // console.log(comments);
         this.setState({ ourComments: comments, isLoading: false });
       } else {
         this.setState({ isLoading: false, errorMessage: true });
@@ -108,7 +108,7 @@ class CommentList extends React.Component {
   }
 
   render() {
-    console.log(this.props.postId);
+    // console.log(this.props.postId);
     let body;
     let { user } = this.state;
     if (!this.state.isLoading && this.state.ourComments.length !== 0) {

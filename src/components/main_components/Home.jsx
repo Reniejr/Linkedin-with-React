@@ -7,6 +7,7 @@ import Posts from "../home_subcomponents/Posts";
 import MakePost from "../home_subcomponents/MakePost";
 import LeftSide from "../sideComponents/LeftSide";
 import RightSide from "../sideComponents/RightSide";
+import { withAuth0 } from "@auth0/auth0-react";
 
 class Home extends React.Component {
   // fetch posts here
@@ -53,7 +54,7 @@ class Home extends React.Component {
     });
   };
 
-  uploadImage = async postId => {
+  uploadImage = async (postId) => {
     try {
       let response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/posts/${postId}/picture`,
@@ -75,8 +76,11 @@ class Home extends React.Component {
   };
 
   fetchPost = async () => {
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
+
     let response = await fetch(
-      process.env.REACT_APP_BASE_URL + `/posts/600eab3b9257344464c04d3d`,
+      process.env.REACT_APP_BASE_URL + `/posts/${currentId}`,
       {
         method: "POST",
         body: JSON.stringify(this.state.post),
@@ -106,7 +110,7 @@ class Home extends React.Component {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  fillUp = e => {
+  fillUp = (e) => {
     let text = "";
     text = e.currentTarget.value;
     if (text.length > 0) {
@@ -165,4 +169,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default withAuth0(Home);
