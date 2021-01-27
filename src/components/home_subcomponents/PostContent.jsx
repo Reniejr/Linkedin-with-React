@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-const { REACT_APP_BASE_URL } = process.env;
+// const { REACT_APP_BASE_URL } = process.env;
 import { Link } from "react-router-dom";
 import ActionButtons from "./ActionButtons";
 import AddComment from "./AddComment";
@@ -32,7 +32,7 @@ class PostContent extends Component {
     // const userId = JSON.parse(window.localStorage.getItem("userId"));
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `/profiles/600eab3b9257344464c04d3d`
+        process.env.REACT_APP_BASE_URL + `/profiles/600eaaf99257344464c04d3c`
       );
 
       const user = await response.json();
@@ -55,7 +55,7 @@ class PostContent extends Component {
     });
   };
 
-  updateCommentField = e => {
+  updateCommentField = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
       this.submitComment();
