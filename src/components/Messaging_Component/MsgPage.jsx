@@ -17,15 +17,20 @@ class MsgPage extends PureComponent {
   };
 
   setUser = async () => {
-    let id;
-    this.props.match.params.id === "me"
-      ? (id = process.env.REACT_APP_ID)
-      : (id = process.env.REACT_APP_ID);
-    const user = await getUser(`${id}`);
-    this.setState({ username: user.username });
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
+    // let id;
+    // this.props.match.params.id === "me"
+    //   ? (id = process.env.REACT_APP_ID)
+    //   : (id = process.env.REACT_APP_ID);
+    const getUserInfo = await getUser(`${currentId}`);
+    this.setState({ username: getUserInfo.username });
   };
 
   componentDidMount() {
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
+    console.log(currentId);
     this.setUser();
     const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
       cluster: process.env.REACT_APP_PUSHER_CLUSTER,
