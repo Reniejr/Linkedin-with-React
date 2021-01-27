@@ -145,8 +145,11 @@ class PostContent extends Component {
                       />
                     )}
                     <div className="user-info float-left d-flex flex-column">
-                      <h5 className="ml-0">
-                        {post.user.name} {post.user.surname}
+                      <h5
+                        className="ml-0"
+                        style={{ textTransform: "Capitalize" }}
+                      >
+                        {post.user.name}
                         &middot; <span>1st</span>
                       </h5>
                       <p style={{ textAlign: "left" }} className="ml-2 ">
