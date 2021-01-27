@@ -24,25 +24,16 @@ class App extends React.Component {
     filteredUserList: [],
     showResult: false,
     searchString: "",
+    currentId:null
   };
 
-  getUserList = async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_BASE_URL + "/profiles/",
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
-      );
-      const userList = await response.json();
-      console.log("All user list", userList);
-      this.setState({ userList });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  setCurrentId=(id)=> {
+    this.setState({currentId: id})
+  }  
+
+  setUserList = (user) => {
+    this.setState({userList: [...this.state.userList, user]})
+  }
 
   handleSearch = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
@@ -66,8 +57,10 @@ class App extends React.Component {
     }
   };
 
+
+
   componentDidMount() {
-    this.getUserList();
+    // this.getUserList();
   }
   render() {
     return (
@@ -89,10 +82,10 @@ class App extends React.Component {
           <Route path="/profile/:id" component={Profile} />
           <Route
             path="/mynetwork"
-            render={(props) => <NetworkPage userList={this.state.userList} />}
+            render={(props) => <NetworkPage userList={this.state.userList} setCurrentId={this.setCurrentId} setUsers={ this.setUserList}/>}
           />
           <Route path="/jobs" component={JobsPage} />
-          <Route path="/message/:id" component={MsgPage} />
+          <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={ this.state.userList}/>} />
         </Router>
       </div>
     );
