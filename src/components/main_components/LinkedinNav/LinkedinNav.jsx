@@ -73,9 +73,7 @@ export default class LinkedinNav extends PureComponent {
                 <span>Me</span>
                 <DropDown show={this.state.dropdown}>
                   <li>
-                    <Link to={`/profile/${process.env.REACT_APP_ID}`}>
-                      View Profile
-                    </Link>
+                    <Link to={`/profile/me`}>View Profile</Link>
                   </li>
                   <li>
                     <LogoutButton />
