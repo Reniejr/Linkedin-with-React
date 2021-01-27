@@ -1,3 +1,4 @@
+@import '../../css/SASS/Compatibilites';
 #msg-side {
   width: 40%;
   height: 100%;
@@ -34,6 +35,26 @@
     .msg-container {
       p:nth-of-type(1) {
         margin-top: 60%;
+      }
+      .listUsers{
+        margin: 0;
+        padding: 1rem;
+        list-style: none;
+        li{
+          @include borderRadius(5px);
+          text-align: left;
+          margin: 1rem 0;
+          padding: .5rem 0;
+          border: 2px solid;
+          font-weight: 700;
+          input{
+            background-color: transparent;
+            border: none;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+          }
+        }
       }
     }
     button {
