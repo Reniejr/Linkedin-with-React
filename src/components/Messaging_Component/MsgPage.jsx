@@ -24,6 +24,8 @@ class MsgPage extends PureComponent {
     pusherConfig: [],
     modify: null,
     listUsers: [],
+    randomColor: [],
+    selectedUser: null,
   };
 
   pusherSetup = (allUsers) => {
@@ -53,15 +55,28 @@ class MsgPage extends PureComponent {
   setAllUsers = async () => {
     const allUsers = await getAllProfiles(this.state.username);
     this.setState({ allUsers });
+
     let allChats = [];
+
     let currentIndex = allUsers.findIndex(
       (user) => user.username === this.state.username
     );
+
     let listUsers = allUsers.filter(
       (user) => user.username !== this.state.username
     );
+
+    listUsers.forEach((user) => {
+      const randomColor = `#${Math.floor(Math.random() * 16777215).toString(
+        16
+      )}`;
+      this.setState({ randomColor: [...this.state.randomColor, randomColor] });
+    });
+
     console.log(listUsers);
+
     this.setState({ listUsers: listUsers });
+
     allUsers.map((user, index) => {
       let chatBox = {
         chatId: index + currentIndex,
@@ -70,6 +85,7 @@ class MsgPage extends PureComponent {
       };
       allChats.push(chatBox);
     });
+
     this.setState({ chats: allChats });
   };
 
@@ -92,6 +108,11 @@ class MsgPage extends PureComponent {
     )[0];
     console.log(currentChat);
     this.setState({ currentChat: currentChat });
+
+    let selectedUser = this.state.allUsers.filter(
+      (user) => user.username === chatSelected
+    )[0];
+    this.setState({ selectedUser: selectedUser });
   };
 
   componentDidMount = async () => {
@@ -149,20 +170,25 @@ class MsgPage extends PureComponent {
     return (
       <div id="msg-page">
         <div className="main-body">
-          <MsgSide allUsers={this.state.listUsers} setChat={this.setChat} />
+          <MsgSide
+            allUsers={this.state.listUsers}
+            setChat={this.setChat}
+            randomColor={this.state.randomColor}
+          />
           <div id="main-msg">
             <header>New Message</header>
-            <input
-              type="text"
-              placeholder="Type a name or multiple names..."
-              value={
-                this.state.currentChat
-                  ? this.state.currentChat.user
-                  : "Type a name or multiple names..."
-              }
-            />
+            <div className="currentChat">
+              {this.state.selectedUser ? (
+                <>
+                  <img src={this.state.selectedUser.image} alt="" />
+                  <p>{this.state.selectedUser.username}</p>
+                </>
+              ) : (
+                "Type a name or multiple names..."
+              )}
+            </div>
             <div className="msg-dialog">
-              {this.state.currentChat && this.state.currentChat.chat ? (
+              {this.state.currentChat ? (
                 this.state.currentChat.chat.map((msg) => {
                   return (
                     <div
@@ -182,6 +208,11 @@ class MsgPage extends PureComponent {
                               : "green",
                         }}
                       >
+                        {this.state.username !== msg.username ? (
+                          <img src={this.state.selectedUser.image} alt="" />
+                        ) : (
+                          <></>
+                        )}
                         {msg.username}
                       </p>
                       <span
