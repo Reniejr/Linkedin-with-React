@@ -122,6 +122,9 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
+    console.log(currentId);
     this.getPosts();
   }
 
