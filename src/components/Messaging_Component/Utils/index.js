@@ -17,7 +17,7 @@ export const updateChannel = async (array, channelId, body) => {
     let updateArray = [...array]
     const index = updateArray.findIndex(channel => channel.chatId === channelId)
     updateArray[index].chat.push(body)
-    console.log(updateArray, channelId, index)
+    // console.log(updateArray, channelId, index)
     return updateArray
 
 }

@@ -21,6 +21,8 @@ class MsgPage extends PureComponent {
       chatId: null,
       chat: [],
     },
+    pusherConfig: [],
+    modify: null,
   };
 
   pusherSetup = (allUsers) => {
@@ -44,7 +46,7 @@ class MsgPage extends PureComponent {
     let currentId = user.sub.slice(6);
     const getUserInfo = await getUser(`${currentId}`);
     this.setState({ username: getUserInfo.username });
-    console.log(getUserInfo.username);
+    // console.log(getUserInfo.username);
   };
 
   setAllUsers = async () => {
@@ -84,36 +86,29 @@ class MsgPage extends PureComponent {
     )[0];
     console.log(currentChat);
     this.setState({ currentChat: currentChat });
-
-    const pusher = this.pusherSetup(this.state.allUsers);
-    const channel = pusher.filter(
-      (channel) => channel.name === index.toString()
-    )[0];
-    channel.bind("message", (data) => {
-      // Original
-      this.setState({
-        currentChat: {
-          ...this.state.currentChat,
-          chat: [...this.state.currentChat.chat, ...data],
-        },
-      });
-    });
-    this.typeText = this.typeText.bind(this);
   };
 
   componentDidMount = async () => {
     await this.setUser();
     await this.setAllUsers();
+    const pusher = await this.pusherSetup(this.state.allUsers);
+    this.setState({ pusherConfig: pusher });
   };
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.currentChat !== this.state.currentChat) {
-      console.log(this.state.currentChat);
-    }
-  }
 
   typeText = (e) => {
     if (e.keyCode === 13) {
+      const channel = this.state.pusherConfig.filter(
+        (channel) => channel.name === this.state.index.toString()
+      )[0];
+      channel.bind("message", (data) => {
+        this.setState({
+          currentChat: {
+            ...this.state.currentChat,
+            chat: [...this.state.currentChat.chat, ...data],
+          },
+        });
+      });
+      this.typeText = this.typeText.bind(this);
       const payload = {
         message: {
           username: this.state.username,
@@ -128,11 +123,21 @@ class MsgPage extends PureComponent {
       );
       axios.post(`${process.env.REACT_APP_BASE_URL}/chat`, array);
       e.currentTarget.value = " ";
+      let temp = this.state.modify + 1;
+      this.setState({
+        modify: temp,
+      });
     } else {
       let text = e.currentTarget.value;
       this.setState({ text: text });
     }
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.modify !== this.state.modify) {
+      console.log("sent");
+    }
+  }
 
   render() {
     return (
