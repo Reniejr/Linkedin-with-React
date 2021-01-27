@@ -1,3 +1,4 @@
+@import '../../css/SASS/Compatibilites';
 #main-msg {
   width: 60%;
   header {
@@ -17,23 +18,22 @@
     border-bottom: 1px solid rgba($color: #000000, $alpha: 0.1);
     padding: 20px;
     overflow-y: auto;
-    .dialog {
-      margin: 0.5rem 0;
+    .text{
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      p {
-        margin: 0;
+      p{
+          font-size: .75rem;
+          font-weight: 800;
+          margin-bottom: .5rem;
       }
-      p:nth-of-type(1) {
-        font-size: 0.6rem;
-      }
-      p:nth-of-type(2) {
-        width: fit-content;
+      span{
+        max-width: 200px;
+        padding: .5rem 1rem;
+        font-size: 1rem;
+        font-weight: 700;
+        border: 1px solid rgba($color: #000000, $alpha: 0.1);
+        @include borderRadius(10px);
         color: white;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 20px;
       }
     }
   }

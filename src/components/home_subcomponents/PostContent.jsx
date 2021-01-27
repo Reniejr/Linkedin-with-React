@@ -29,15 +29,10 @@ class PostContent extends Component {
   };
 
   getProfileInfo = async () => {
-    const userId = JSON.parse(window.localStorage.getItem("userId"));
+    // const userId = JSON.parse(window.localStorage.getItem("userId"));
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `profile/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
+        process.env.REACT_APP_BASE_URL + `/profiles/600eab3b9257344464c04d3d`
       );
 
       const user = await response.json();
@@ -79,7 +74,7 @@ class PostContent extends Component {
 
     try {
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/comments/`,
+        "https://striveschool-api.herokuapp.com/api/comments/",
         {
           method: "POST",
           body: JSON.stringify(this.state.addComment),
@@ -117,6 +112,7 @@ class PostContent extends Component {
   }
   render() {
     const { post } = this.props;
+    console.log(post);
     return (
       <>
         {!this.state.isDeleted && (

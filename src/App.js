@@ -84,6 +84,7 @@ class App extends React.Component {
             handleSearch={this.handleSearch}
           />
 
+          <ProtectedRoute path="/logout" component={NotRegistered} />
           <ProtectedRoute path="/" exact component={Home} />
           <Route path="/profile/:id" component={Profile} />
           <Route
@@ -91,8 +92,7 @@ class App extends React.Component {
             render={props => <NetworkPage userList={this.state.userList} />}
           />
           <Route path="/jobs" component={JobsPage} />
-          <Route path="/message" component={MsgPage} />
-          <Route path="/logout" component={NotRegistered} />
+          <Route path="/message/:id" component={MsgPage} />
         </Router>
       </div>
     );

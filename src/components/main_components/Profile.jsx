@@ -17,6 +17,7 @@ import EditAdd from "../sideComponents/EditAdd";
 import PeopleAlsoViewed from "../sideComponents/PeopleAlsoViewed";
 import PeopleYouMayKnow from "../sideComponents/PeopleYouMayKnow";
 import InLearning from "../sideComponents/InLearning";
+import { withAuth0 } from "@auth0/auth0-react";
 
 class Profile extends React.Component {
   state = {
@@ -33,23 +34,19 @@ class Profile extends React.Component {
     e.preventDefault();
 
     this.setState({ isLoading: true });
-    let userId = JSON.parse(window.localStorage.getItem("userId"));
+    let userId = this.state.user._id;
 
     const inputFile = document.querySelector("#profile-image-upload-file");
 
     let formData = new FormData();
-    formData.append("profile", inputFile.files[0]);
+    formData.append("image", inputFile.files[0]);
 
     try {
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/profile/${userId}/picture`,
+        `${process.env.REACT_APP_BASE_URL}/profiles/${userId}/picture`,
         {
           method: "POST",
           body: formData,
-          headers: new Headers({
-            // "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          }),
         }
       );
 
@@ -73,44 +70,81 @@ class Profile extends React.Component {
       });
     }
   };
+
   getProfileInfo = async () => {
     let id = this.props.match.params.id;
+    let url = "";
+    if (this.props.match.params.id.localeCompare("me") === 0) {
+      const { user } = this.props.auth0;
+      let currentId = user.sub.slice(6);
+      url = process.env.REACT_APP_BASE_URL + `/profiles/${currentId}`;
+    } else {
+      url = process.env.REACT_APP_BASE_URL + `/profiles/${id}`;
+    }
     try {
-      const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `profile/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
-      );
+      const response = await fetch(url);
+      console.log(response);
 
-      const user = await response.json();
-      console.log(user);
-      this.setState({ user }, () => {
-        if (this.props.match.params.id.localeCompare("me") === -1) {
-          this.setState({ isShowEditButton: false });
-        } else {
-          this.setState({ isShowEditButton: true });
+      if (response.ok) {
+        const user = await response.json();
+        console.log("test", user);
+        this.setState({ user }, () => {
+          if (this.props.match.params.id.localeCompare("me") === -1) {
+            this.setState({ isShowEditButton: false });
+          } else {
+            this.setState({ isShowEditButton: true });
 
-          let id = this.state.user._id;
-          window.localStorage.setItem("userId", JSON.stringify(id));
-        }
-      });
+            let id = this.state.user._id;
+            window.localStorage.setItem("userId", JSON.stringify(id));
+          }
+        });
+      } else {
+        console.log("POSTING");
+        this.postBasicProfile();
+      }
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  postBasicProfile = async () => {
+    try {
+      const { user } = this.props.auth0;
+
+      // this.setState({ user: user });
+      let profile = {
+        _id: user.sub.slice(6),
+        name: user.nickname,
+        email: user.email,
+        image: user.picture,
+        bio: "bio here",
+        area: "area here",
+        username: user.name,
+        surname: "surname here",
+      };
+      let response = fetch(`${process.env.REACT_APP_BASE_URL}/profiles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+      });
+      if (response.ok) {
+        alert("successfuly added");
+        let result = await response.json();
+        console.log(result);
+      } else {
+        alert("Unable to post something went wrong");
+        let error = await response.json();
+        console.log(error);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   getProfile = async () => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + "profile/",
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
+        process.env.REACT_APP_BASE_URL + "/profiles"
       );
 
       const users = await response.json();
@@ -167,7 +201,7 @@ class Profile extends React.Component {
             <Activity />
             <EducationBlock
               isShowEditBtn={this.state.isShowEditButton}
-              user={userInfo}
+              user={this.state.user._id}
             />
             <Skills isShowEditBtn={this.state.isShowEditButton} />
             <Interests />
@@ -186,4 +220,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default withAuth0(Profile);
