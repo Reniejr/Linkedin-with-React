@@ -81,6 +81,7 @@ class MsgPage extends PureComponent {
       this.setState({ chats: [...this.state.chats, data] });
     });
     this.typeText = this.typeText.bind(this);
+    console.log(index);
   };
 
   componentDidMount = async () => {
