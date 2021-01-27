@@ -78,12 +78,12 @@ class Home extends React.Component {
   fetchPost = async () => {
     const { user } = this.props.auth0;
     let currentId = user.sub.slice(6);
-
+    let newPost = { ...this.state.post, user: currentId };
     let response = await fetch(
       process.env.REACT_APP_BASE_URL + `/posts/${currentId}`,
       {
         method: "POST",
-        body: JSON.stringify(this.state.post),
+        body: JSON.stringify(newPost),
         headers: new Headers({
           "Content-Type": "application/json",
         }),
