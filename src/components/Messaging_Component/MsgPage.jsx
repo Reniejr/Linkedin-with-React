@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import MainMsg from "./MainMsg";
 import "./Messaging_Styles/MsgPage.scss";
+import "./Messaging_Styles/MainMsg.scss";
 import "../css/RightSide.scss";
 import MsgSide from "./MsgSide";
 import footericon from "../images/footericon.png";
@@ -23,6 +23,7 @@ class MsgPage extends PureComponent {
     },
     pusherConfig: [],
     modify: null,
+    listUsers: [],
   };
 
   pusherSetup = (allUsers) => {
@@ -56,6 +57,11 @@ class MsgPage extends PureComponent {
     let currentIndex = allUsers.findIndex(
       (user) => user.username === this.state.username
     );
+    let listUsers = allUsers.filter(
+      (user) => user.username !== this.state.username
+    );
+    console.log(listUsers);
+    this.setState({ listUsers: listUsers });
     allUsers.map((user, index) => {
       let chatBox = {
         chatId: index + currentIndex,
@@ -135,7 +141,7 @@ class MsgPage extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.modify !== this.state.modify) {
-      console.log("sent");
+      // console.log("sent");
     }
   }
 
@@ -143,17 +149,7 @@ class MsgPage extends PureComponent {
     return (
       <div id="msg-page">
         <div className="main-body">
-          <MsgSide allUsers={this.state.allUsers} setChat={this.setChat} />
-          {/* <MainMsg
-            typeFunc={this.typeText}
-            chat={this.state.chats}
-            currentUser={this.state.username}
-            currentChat={
-              this.state.chats.filter(
-                (chat) => chat.user === this.state.chatSelected
-              )[0]
-            }
-          /> */}
+          <MsgSide allUsers={this.state.listUsers} setChat={this.setChat} />
           <div id="main-msg">
             <header>New Message</header>
             <input
