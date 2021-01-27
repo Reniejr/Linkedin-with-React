@@ -1,103 +1,141 @@
 import React from "react";
-import { ListGroup, Badge, Button } from "react-bootstrap";
+import { ListGroup, Badge, Button, Row, Col } from "react-bootstrap";
 import { Spinner, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+const { REACT_APP_BASE_URL } = process.env;
+
 class CommentList extends React.Component {
-	state = {
-		comments: [],
-		isLoading: true,
+  state = {
+    comments: [],
 
-		deletedSize: 0,
-		errorMessage: false,
-	};
+    //*:::::::::::::::
+    ourComments: [],
 
-	getComments = async () => {
-		try {
-			let response = await fetch(
-				"https://striveschool-api.herokuapp.com/api/comments/" +
-					this.props.postId,
-				{
-					headers: new Headers({
-						Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-					}),
-				}
-			);
+    isLoading: true,
 
-			if (response.ok) {
-				let comments = await response.json();
+    deletedSize: 0,
+    errorMessage: false,
+  };
 
-				this.setState({ comments, isLoading: false });
-			} else {
-				this.setState({ isLoading: false, errorMessage: true });
-			}
-		} catch (e) {
-			this.setState({ isLoading: false, errorMessage: true });
-		}
-	};
+  //!BAD API THIS IS EVIL!!!!!!!!!!::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //   getComments = async () => {
+  //     try {
+  //       let response = await fetch(
+  //         "https://striveschool-api.herokuapp.com/api/comments/" +
+  //           this.props.postId,
+  //         {
+  //           headers: new Headers({
+  //             Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+  //           }),
+  //         }
+  //       );
 
-	handleDelete = async (e) => {
-		let id = e.currentTarget.id;
-		try {
-			let response = await fetch(
-				`https://striveschool-api.herokuapp.com/api/comments/${id}`,
-				{
-					method: "DELETE",
-					headers: new Headers({
-						Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-					}),
-				}
-			);
+  //       if (response.ok) {
+  //         let comments = await response.json();
 
-			if (response.ok) {
-				let filteredComments = this.state.comments.filter(
-					(comment) => comment._id !== id
-				);
-				this.setState({
-					comments: filteredComments,
-					isloading: false,
-					deletedSize: this.state.deletedSize + 1,
-				});
-			} else {
-				alert("something went wrong :(");
-			}
-		} catch (err) {
-			console.log(err);
-			this.setState({ isLoading: false, errorMessage: true });
-		}
-	};
+  //         this.setState({ comments, isLoading: false });
+  //       } else {
+  //         this.setState({ isLoading: false, errorMessage: true });
+  //       }
+  //     } catch (e) {
+  //       this.setState({ isLoading: false, errorMessage: true });
+  //     }
+  //   };
 
-	// componentWillUnmount() {
-	// 	this.getComments();
-	// }
+  //!::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.submittedSize !== this.props.submittedSize) {
-			this.getComments();
-			// this.setState({ update: !this.state.update });
-		}
-		if (prevProps.fetchComment !== this.props.fetchComment) {
-			this.getComments();
-		}
-	}
-	render() {
-		let body;
-		let { user } = this.state;
-		if (!this.state.isLoading && this.state.comments.length !== 0) {
-			body = (
-				<div className='mb-5'>
-					{this.state.comments.map((comment, index) => {
-						return (
-							<div className='d-flex flex-row'>
-								<img
-									className='comment-user-avatar mt-1'
-									src='https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
-									alt='comment-user-avatar'
-								/>
-								<ListGroup
-									key={index}
-									className='comment-item d-flex justify-content-between mb-3'>
-									<ListGroup.Item className='text-dark d-flex flex-column'>
-										{/* <div>
+  //*GOOD API, GOOD BOY :)::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  getCommentsFromOurApi = async () => {
+    try {
+      let response = await fetch(
+        ` ${REACT_APP_BASE_URL}/comments/` + this.props.postId
+      );
+
+      if (response.ok) {
+        let comments = await response.json();
+        console.log(comments);
+        this.setState({ ourComments: comments, isLoading: false });
+      } else {
+        this.setState({ isLoading: false, errorMessage: true });
+      }
+    } catch (e) {
+      this.setState({ isLoading: false, errorMessage: true });
+    }
+  };
+
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+  //   handleDelete = async e => {
+  //     let id = e.currentTarget.id;
+  //     try {
+  //       let response = await fetch(`${REACT_APP_BASE_URL}/` + `${id}`, {
+  //         method: "DELETE",
+  //         //   headers: new Headers({
+  //         //     Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+  //         //   }),
+  //       });
+
+  //       if (response.ok) {
+  //         let filteredComments = this.state.ourComments.filter(
+  //           comment => comment._id !== id
+  //         );
+  //         this.setState({
+  //           ourComments: filteredComments,
+  //           isloading: false,
+  //           deletedSize: this.state.deletedSize + 1,
+  //         });
+  //       } else {
+  //         alert("something went wrong :(");
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //       this.setState({ isLoading: false, errorMessage: true });
+  //     }
+  //   };
+
+  componentWillUnmount() {
+    this.getCommentsFromOurApi();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.submittedSize !== this.props.submittedSize) {
+      this.getCommentsFromOurApi();
+      // this.setState({ update: !this.state.update });
+    }
+    if (prevProps.fetchComment !== this.props.fetchComment) {
+      this.getCommentsFromOurApi();
+    }
+  }
+
+  render() {
+    console.log(this.props.postId);
+    let body;
+    let { user } = this.state;
+    if (!this.state.isLoading && this.state.ourComments.length !== 0) {
+      body = (
+        <div className="mb-5">
+          {this.state.ourComments.map((comment, index) => {
+            return (
+              <>
+                <Row>
+                  <img
+                    className="comment-user-avatar mt-1 ml-5 mr-2 text-left"
+                    src={comment.user.image}
+                    alt="comment-user-avatar"
+                  />
+
+                  <p className="d-inline-block font-weight-bold">
+                    {comment.user.name}
+                  </p>
+                </Row>
+
+                <div className="d-flex flex-row">
+                  <ListGroup
+                    key={index}
+                    className="comment-item d-flex justify-content-between mb-3"
+                  >
+                    <ListGroup.Item className="text-dark d-flex flex-column">
+                      {/* <div>
 										<img
 											className='user-img float-left'
 											src={comment.author.image}
@@ -125,45 +163,42 @@ class CommentList extends React.Component {
 											<i className='three-dot float-right fas fa-ellipsis-h'></i>
 										</div>
 									</div> */}
-										<p
-											style={{ textAlign: "left" }}
-											className='float-left'>
-											{comment.comment}
-										</p>
-									</ListGroup.Item>
-								</ListGroup>
-							</div>
-						);
-					})}
-				</div>
-			);
-		} else if (
-			this.state.comments.length === 0 &&
-			!this.state.isLoading &&
-			!this.state.errorMessage
-		) {
-			body = (
-				<div className='d-flex justify-content-center align-items-center mt-3'></div>
-			);
-		} else if (this.state.errorMessage) {
-			body = (
-				<div className='d-flex justify-content-center align-items-center mt-3'>
-					<Alert variant='danger'>
-						&#9762; Something went wrong!
-					</Alert>
-				</div>
-			);
-		} else {
-			body = (
-				<Spinner
-					className='comment-spinner'
-					animation='grow'
-					variant='primary'
-				/>
-			);
-		}
-		return body;
-	}
+                      <p style={{ textAlign: "left" }} className="float-left">
+                        {comment.text}
+                      </p>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </div>
+              </>
+            );
+          })}
+        </div>
+      );
+    } else if (
+      this.state.ourComments.length === 0 &&
+      !this.state.isLoading &&
+      !this.state.errorMessage
+    ) {
+      body = (
+        <div className="d-flex justify-content-center align-items-center mt-3"></div>
+      );
+    } else if (this.state.errorMessage) {
+      body = (
+        <div className="d-flex justify-content-center align-items-center mt-3">
+          <Alert variant="danger">&#9762; Something went wrong!</Alert>
+        </div>
+      );
+    } else {
+      body = (
+        <Spinner
+          className="comment-spinner"
+          animation="grow"
+          variant="primary"
+        />
+      );
+    }
+    return body;
+  }
 }
 
 export default CommentList;

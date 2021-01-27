@@ -29,7 +29,7 @@ class App extends React.Component {
   getUserList = async () => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + "profile/",
+        process.env.REACT_APP_BASE_URL + "/profiles/",
         {
           headers: {
             Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
@@ -44,12 +44,12 @@ class App extends React.Component {
     }
   };
 
-  handleSearch = (e) => {
+  handleSearch = e => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
 
       let filteredUserList = this.state.userList.filter(
-        (user) =>
+        user =>
           (user.name &&
             user.name.toLowerCase().includes(this.state.searchString)) ||
           (user.surname &&
@@ -81,13 +81,14 @@ class App extends React.Component {
           />
           <LinkedinNav
             searchString={this.state.searchString}
-            handleSearch={this.handleSearch}/>
+            handleSearch={this.handleSearch}
+          />
 
           <ProtectedRoute path="/" exact component={Home} />
           <Route path="/profile/:id" component={Profile} />
           <Route
             path="/mynetwork"
-            render={(props) => <NetworkPage userList={this.state.userList} />}
+            render={props => <NetworkPage userList={this.state.userList} />}
           />
           <Route path="/jobs" component={JobsPage} />
           <Route path="/message" component={MsgPage} />
