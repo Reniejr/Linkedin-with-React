@@ -16,6 +16,7 @@ class MsgPage extends PureComponent {
     chats: [],
     allUsers: [],
     chatSelected: "",
+    index: "",
   };
 
   pusherSetup = (allUsers) => {
@@ -61,6 +62,7 @@ class MsgPage extends PureComponent {
     let index = this.state.chats.findIndex(
       (user) => user.user === chatSelected
     );
+    this.setState({ index: index });
 
     const pusher = this.pusherSetup(this.state.allUsers);
     const channel = pusher.filter(
@@ -85,11 +87,11 @@ class MsgPage extends PureComponent {
           username: this.state.username,
           message: this.state.text,
         },
-        chat: `${this.state.chatSelected}`,
+        chat: `${this.state.index}`,
       };
       let array = updateChannel(
         this.state.chats,
-        this.state.chatSelected,
+        this.state.index,
         payload.message
       );
       axios.post(`${process.env.REACT_APP_BASE_URL}/chat`, array);
