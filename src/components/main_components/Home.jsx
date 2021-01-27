@@ -8,6 +8,7 @@ import MakePost from "../home_subcomponents/MakePost";
 import LeftSide from "../sideComponents/LeftSide";
 import RightSide from "../sideComponents/RightSide";
 import { withAuth0 } from "@auth0/auth0-react";
+import EditPost from "../home_subcomponents/EditPost";
 
 class Home extends React.Component {
   // fetch posts here
@@ -172,7 +173,9 @@ class Home extends React.Component {
                 postSize={this.state.postSize}
                 posts={this.state.postList}
                 isLoading={this.state.isLoading}
+                getPosts={this.getPosts}
               />
+              {/* <EditPost /> */}
             </Col>
             <Col xs={3}>
               <RightSide />

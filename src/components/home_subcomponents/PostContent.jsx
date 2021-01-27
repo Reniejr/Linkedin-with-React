@@ -114,7 +114,7 @@ class PostContent extends Component {
     // this.getPostImage();
   }
   render() {
-    const { post } = this.props;
+    const { post, getPosts } = this.props;
     return (
       <>
         {!this.state.isDeleted && (
@@ -133,6 +133,7 @@ class PostContent extends Component {
                 toggleModal={true}
                 post={post}
                 userId={post.user._id}
+                getPosts={getPosts}
               ></DropdownPost>
               <Row>
                 <Col md={12} className="mt-4">
