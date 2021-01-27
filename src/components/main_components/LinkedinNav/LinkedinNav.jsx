@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 //PERSONAL COMPONENTS
 import DropDown from "./DropDown";
-import LogoutButton from "../../authComponents/LogoutButton";
+import AuthenticationButton from "../../authComponents/LogoutButton";
 //ASSETS
 import logo from "../../images/logo.png";
 //STYLE
@@ -76,7 +76,7 @@ export default class LinkedinNav extends PureComponent {
                     <Link to={`/profile/me`}>View Profile</Link>
                   </li>
                   <li>
-                    <LogoutButton />
+                    <AuthenticationButton />
                   </li>
                 </DropDown>
               </div>
