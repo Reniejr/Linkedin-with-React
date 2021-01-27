@@ -77,6 +77,25 @@
                                 color: #0177b4;
                                 background-color:transparent;
                             }
+                            a{
+                                position: relative;
+                                span{
+                                    position: relative;
+                                }
+                                #total-not{
+                                    @include borderRadius(50%);
+                                    position: absolute;
+                                    top: 5px;
+                                    right: 0;
+                                    width: 20px;
+                                    height: 20px;
+                                    background-color:red;
+                                    p{
+                                        margin: 0;
+                                        font-weight: 700;
+                                    }
+                                }
+                            }
                         }
                         li:nth-last-of-type(1){
                             border-top: 1px solid rgba($color: #000000, $alpha: 0.1);

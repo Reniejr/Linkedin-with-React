@@ -24,7 +24,9 @@ class App extends React.Component {
     filteredUserList: [],
     showResult: false,
     searchString: "",
-    currentId:null
+    currentId: null,
+    notifications: 0,
+    counter:0
   };
 
   setCurrentId=(id)=> {
@@ -33,6 +35,14 @@ class App extends React.Component {
 
   setUserList = (user) => {
     this.setState({userList: [...this.state.userList, user]})
+  }
+
+  totalNot = (notifications) => {
+    let total = notifications
+    console.log(total)
+    this.setState({ notifications: total })
+    let counter = this.state.counter + 1
+    this.setState({counter: counter})
   }
 
   handleSearch = (e) => {
@@ -75,6 +85,7 @@ class App extends React.Component {
           <LinkedinNav
             searchString={this.state.searchString}
             handleSearch={this.handleSearch}
+            notifications={this.state.notifications}
           />
 
           <ProtectedRoute path="/logout" component={NotRegistered} />
@@ -85,7 +96,7 @@ class App extends React.Component {
             render={(props) => <NetworkPage userList={this.state.userList} setCurrentId={this.setCurrentId} setUsers={ this.setUserList}/>}
           />
           <Route path="/jobs" component={JobsPage} />
-          <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={ this.state.userList}/>} />
+          <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={this.state.userList} totalNot={ this.totalNot}/>} />
         </Router>
       </div>
     );

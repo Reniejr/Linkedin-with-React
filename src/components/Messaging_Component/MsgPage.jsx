@@ -26,6 +26,7 @@ class MsgPage extends PureComponent {
     listUsers: [],
     randomColor: [],
     selectedUser: null,
+    notifications: [],
   };
 
   pusherSetup = (allUsers) => {
@@ -58,6 +59,7 @@ class MsgPage extends PureComponent {
     this.setState({ allUsers });
 
     let allChats = [];
+    let notifications = [];
 
     let currentIndex = allUsers.findIndex(
       (user) => user.username === this.state.username
@@ -84,10 +86,15 @@ class MsgPage extends PureComponent {
         user: user.username,
         chat: [],
       };
+      let notification = {
+        id: index + currentIndex,
+        txt: 0,
+      };
+      notifications.push(notification);
       allChats.push(chatBox);
     });
 
-    this.setState({ chats: allChats });
+    this.setState({ chats: allChats, notifications: notifications });
   };
 
   setChat = (e) => {
@@ -114,6 +121,18 @@ class MsgPage extends PureComponent {
       (user) => user.username === chatSelected
     )[0];
     this.setState({ selectedUser: selectedUser });
+
+    let updateNot = [];
+    this.state.notifications.map((chat, index) => {
+      console.log("id", chat.id, "txts", chat.txt);
+      // console.log(this.state.currentChat);
+      let updatedChat = { ...chat };
+      if (chat.id === this.state.currentChat.chatId) {
+        updatedChat.txt = 0;
+      }
+      updateNot.push(updatedChat);
+    });
+    this.setState({ notifications: updateNot });
   };
 
   componentDidMount = async () => {
@@ -155,6 +174,18 @@ class MsgPage extends PureComponent {
       this.setState({
         modify: temp,
       });
+      let updateNot = [];
+      this.state.notifications.map((chat, index) => {
+        console.log("id", chat.id, "txts", chat.txt);
+        // console.log(this.state.currentChat);
+        let updatedChat = { ...chat };
+        if (chat.id === this.state.currentChat.chatId) {
+          updatedChat.txt = updatedChat.txt + 1;
+        }
+        updateNot.push(updatedChat);
+      });
+      this.setState({ notifications: updateNot });
+      // console.log(updateNot);
     } else {
       let text = e.currentTarget.value;
       this.setState({ text: text });
@@ -175,6 +206,9 @@ class MsgPage extends PureComponent {
             allUsers={this.state.listUsers}
             setChat={this.setChat}
             randomColor={this.state.randomColor}
+            notifications={this.state.notifications}
+            currentChat={this.state.currentChat}
+            totalNot={this.props.totalNot}
           />
           <div id="main-msg">
             <header>New Message</header>

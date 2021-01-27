@@ -64,7 +64,34 @@ export default class LinkedinNav extends PureComponent {
             <li>
               <Link to="/">
                 <i className="fas nav-icons fa-bell"></i>
-                <span>Notifications</span>
+                {this.props.notifications === 0 ? (
+                  ""
+                ) : (
+                  <div
+                    id="total-not"
+                    style={{
+                      position: "absolute",
+                      borderRadius: "50%",
+                      top: "-5px",
+                      right: "1.50rem",
+                      width: "20px",
+                      height: "20px",
+                      backgroundColor: "red",
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: "0",
+                        marginTop: "-2px",
+                        fontWeight: "800",
+                        color: "white",
+                      }}
+                    >
+                      {this.props.notifications}
+                    </p>
+                  </div>
+                )}
+                <span style={{ position: "relative" }}>Notifications </span>
               </Link>
             </li>
             <li>

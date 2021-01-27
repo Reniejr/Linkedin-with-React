@@ -5,6 +5,9 @@ export default class MsgSide extends PureComponent {
   state = {
     username: null,
     allUsers: [],
+    notifications: [],
+    curentChat: {},
+    total: 0,
   };
 
   setChat = (e) => {
@@ -35,13 +38,43 @@ export default class MsgSide extends PureComponent {
 
   componentDidMount = () => {
     setTimeout(() => {
-      let allUsers = this.props.allUsers;
-      this.setState({ allUsers: allUsers });
+      let allUsers = this.props.allUsers,
+        notifications = this.props.notifications,
+        currentChat = this.props.currentChat;
+      let total = notifications.reduce(
+        (acc, notification) => acc + notification.txt,
+        0
+      );
+      this.setState({
+        allUsers: allUsers,
+        notifications: notifications,
+        currentChat: currentChat,
+        total: total,
+      });
+      // console.log(total);
+      this.props.totalNot(total);
     }, 200);
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.notifications !== this.props.notifications) {
+      let notifications = this.props.notifications;
+      let total = notifications.reduce(
+        (acc, notification) => acc + notification.txt,
+        0
+      );
+      console.log(total);
+      this.setState({ notifications: notifications, total: total });
+      this.props.totalNot(total);
+    }
+    if (prevProps.curentChat !== this.props.curentChat) {
+      let currentChat = this.props.currentChat;
+      this.setState({ currentChat: currentChat });
+    }
+  }
+
   render() {
-    let { allUsers, setChat, randomColor } = this.props;
+    let { allUsers, setChat, randomColor, notifications } = this.props;
     return (
       <div id="msg-side">
         <header>
@@ -87,6 +120,13 @@ export default class MsgSide extends PureComponent {
                         value={user.username}
                         onClick={(e) => this.setChat(e)}
                       />
+                      {this.state.notifications[index].txt === 0 ? (
+                        <></>
+                      ) : (
+                        <div className="badge-not">
+                          <p>{this.state.notifications[index].txt}</p>
+                        </div>
+                      )}
                     </li>
                   );
                 })}
