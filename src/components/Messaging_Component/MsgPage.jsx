@@ -92,7 +92,6 @@ class MsgPage extends PureComponent {
     channel.bind("message", (data) => {
       // Original
       this.setState({
-        chats: [...this.state.chats, data],
         currentChat: {
           ...this.state.currentChat,
           chat: [...this.state.currentChat.chat, ...data],
@@ -100,7 +99,6 @@ class MsgPage extends PureComponent {
       });
     });
     this.typeText = this.typeText.bind(this);
-    console.log(index);
   };
 
   componentDidMount = async () => {
@@ -110,6 +108,7 @@ class MsgPage extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentChat !== this.state.currentChat) {
+      console.log(this.state.currentChat);
     }
   }
 
