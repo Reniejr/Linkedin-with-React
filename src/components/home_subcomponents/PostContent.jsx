@@ -9,6 +9,8 @@ import CommentList from "./CommentList";
 import PostImage from "./PostImage";
 import DropdownPost from "./DropdowPost";
 import ImagePreviewModal from "../main_components/ImagePreviewModal";
+import { withAuth0 } from "@auth0/auth0-react";
+
 class PostContent extends Component {
   state = {
     comments: [],
@@ -30,13 +32,14 @@ class PostContent extends Component {
 
   getProfileInfo = async () => {
     // const userId = JSON.parse(window.localStorage.getItem("userId"));
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `/profiles/600eaaf99257344464c04d3c`
+        process.env.REACT_APP_BASE_URL + `/profiles/${currentId}`
       );
 
       const user = await response.json();
-      console.log(user);
       this.setState({ user }, () => {
         let addComment = { ...this.state.addComment };
         addComment.author = this.state.user;
@@ -112,7 +115,6 @@ class PostContent extends Component {
   }
   render() {
     const { post } = this.props;
-    console.log(post);
     return (
       <>
         {!this.state.isDeleted && (
@@ -209,4 +211,4 @@ class PostContent extends Component {
   }
 }
 
-export default PostContent;
+export default withAuth0(PostContent);

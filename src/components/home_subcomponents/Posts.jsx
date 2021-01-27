@@ -50,7 +50,6 @@ class Posts extends Component {
           />
         )}
         {posts.map((post) => {
-          console.log(post);
           return <PostContent id={post._id} key={post._id} post={post} />;
         })}
       </div>
