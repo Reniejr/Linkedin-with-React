@@ -25,8 +25,11 @@ class MsgPage extends PureComponent {
       encrypted: true,
     });
     let channels = [];
+    let currentIndex = allUsers.findIndex(
+      (user) => user.username === this.state.username
+    );
     allUsers.map((user, index) => {
-      const channel = pusher.subscribe(`${index}`);
+      const channel = pusher.subscribe(`${index + currentIndex}`);
       channels.push(channel);
     });
     return channels;
@@ -59,9 +62,14 @@ class MsgPage extends PureComponent {
     let chatSelected = e.currentTarget.value;
     this.setState({ chatSelected });
 
+    let currentIndex = this.state.allUsers.findIndex(
+      (user) => user.username === this.state.username
+    );
+
     let index = this.state.chats.findIndex(
       (user) => user.user === chatSelected
     );
+    index = currentIndex + index;
     this.setState({ index: index });
 
     const pusher = this.pusherSetup(this.state.allUsers);
