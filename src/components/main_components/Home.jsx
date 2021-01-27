@@ -53,7 +53,7 @@ class Home extends React.Component {
     });
   };
 
-  uploadImage = async (postId) => {
+  uploadImage = async postId => {
     try {
       let response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/posts/${postId}/picture`,
@@ -106,7 +106,7 @@ class Home extends React.Component {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  fillUp = (e) => {
+  fillUp = e => {
     let text = "";
     text = e.currentTarget.value;
     if (text.length > 0) {
