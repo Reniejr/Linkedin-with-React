@@ -63,7 +63,6 @@ class MsgPage extends PureComponent {
     );
 
     const pusher = this.pusherSetup(this.state.allUsers);
-    console.log(pusher);
     const channel = pusher.filter(
       (channel) => channel.name === index.toString()
     )[0];
