@@ -17,6 +17,10 @@ class MsgPage extends PureComponent {
     allUsers: [],
     chatSelected: "",
     index: "",
+    currentChat: {
+      chatId: null,
+      chat: [],
+    },
   };
 
   pusherSetup = (allUsers) => {
@@ -47,9 +51,12 @@ class MsgPage extends PureComponent {
     const allUsers = await getAllProfiles(this.state.username);
     this.setState({ allUsers });
     let allChats = [];
+    let currentIndex = allUsers.findIndex(
+      (user) => user.username === this.state.username
+    );
     allUsers.map((user, index) => {
       let chatBox = {
-        chatId: index,
+        chatId: index + currentIndex,
         user: user.username,
         chat: [],
       };
@@ -72,13 +79,25 @@ class MsgPage extends PureComponent {
     index = currentIndex + index;
     this.setState({ index: index });
 
+    let currentChat = this.state.chats.filter(
+      (chat) => chat.chatId === index
+    )[0];
+    console.log(currentChat);
+    this.setState({ currentChat: currentChat });
+
     const pusher = this.pusherSetup(this.state.allUsers);
     const channel = pusher.filter(
       (channel) => channel.name === index.toString()
     )[0];
     channel.bind("message", (data) => {
       // Original
-      this.setState({ chats: [...this.state.chats, data] });
+      this.setState({
+        chats: [...this.state.chats, data],
+        currentChat: {
+          ...this.state.currentChat,
+          chat: [...this.state.currentChat.chat, ...data],
+        },
+      });
     });
     this.typeText = this.typeText.bind(this);
     console.log(index);
@@ -89,7 +108,12 @@ class MsgPage extends PureComponent {
     await this.setAllUsers();
   };
 
-  typeText = async (e) => {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentChat !== this.state.currentChat) {
+    }
+  }
+
+  typeText = (e) => {
     if (e.keyCode === 13) {
       const payload = {
         message: {
@@ -116,7 +140,7 @@ class MsgPage extends PureComponent {
       <div id="msg-page">
         <div className="main-body">
           <MsgSide allUsers={this.state.allUsers} setChat={this.setChat} />
-          <MainMsg
+          {/* <MainMsg
             typeFunc={this.typeText}
             chat={this.state.chats}
             currentUser={this.state.username}
@@ -125,7 +149,83 @@ class MsgPage extends PureComponent {
                 (chat) => chat.user === this.state.chatSelected
               )[0]
             }
-          />
+          /> */}
+          <div id="main-msg">
+            <header>New Message</header>
+            <input
+              type="text"
+              placeholder="Type a name or multiple names..."
+              value={
+                this.state.currentChat
+                  ? this.state.currentChat.user
+                  : "Type a name or multiple names..."
+              }
+            />
+            <div className="msg-dialog">
+              {this.state.currentChat && this.state.currentChat.chat ? (
+                this.state.currentChat.chat.map((msg) => {
+                  return (
+                    <div
+                      className="text"
+                      style={{
+                        alignItems:
+                          this.state.username === msg.username
+                            ? "flex-end"
+                            : "flex-start",
+                      }}
+                    >
+                      <p
+                        style={{
+                          color:
+                            this.state.username === msg.username
+                              ? "blue"
+                              : "green",
+                        }}
+                      >
+                        {msg.username}
+                      </p>
+                      <span
+                        style={{
+                          backgroundColor:
+                            this.state.username === msg.username
+                              ? "blue"
+                              : "lime",
+                        }}
+                      >
+                        {msg.message}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className="msg-sender">
+              <input
+                type="text"
+                placeholder="Write here your text..."
+                onChange={this.typeText}
+                onKeyDown={this.typeText}
+              />
+              <button>
+                <i className="fas fa-chevron-up"></i>
+              </button>
+            </div>
+            <div className="media-uploads">
+              <div className="media-icons">
+                <i className="fas fa-image"></i>
+                <i className="fas fa-paperclip"></i>
+                <span>GIF</span>
+                <i className="far fa-smile"></i>
+                <i className="fas fa-video"></i>
+              </div>
+              <div className="msg-options">
+                <button>Send</button>
+                <i className="fas fa-ellipsis-h"></i>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="footer-right" style={{ position: "sticky", top: "60px" }}>
           <div className="links-footer-right">
