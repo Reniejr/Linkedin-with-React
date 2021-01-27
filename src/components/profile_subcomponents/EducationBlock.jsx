@@ -4,6 +4,14 @@ import ModalForEduBlock from "./ModalForEduBlock";
 import { Row, Col, Form } from "react-bootstrap";
 import ExperienceForm from "../dataExamples/ExperienceForm.json";
 import SchoolForm from "../dataExamples/SchoolForm.json";
+import {
+  createExperience,
+  deleteExperience,
+  fetchSingleExperience,
+  fetchUserExperiences,
+  submitExperienceImage,
+  updateSingleExperience,
+} from "../../apis/experience/api";
 
 export default class EducationBlock extends PureComponent {
   state = {
@@ -36,6 +44,7 @@ export default class EducationBlock extends PureComponent {
     buttonModal: "Save",
     stateForValue: "",
     imageToUpload: "",
+    experiences: [],
   };
 
   //FETCH FUNCTIONS
@@ -44,18 +53,17 @@ export default class EducationBlock extends PureComponent {
   fetchGet = async (id, content, idContent, result) => {
     if (idContent === null) {
       let response = await fetch(
-        process.env.REACT_APP_BASE_URL + `/profile/${id}` + content,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
+        `${process.env.REACT_APP_BASE_URL}${content}/${id}`
       );
       result = await response.json();
       this.setState({ results: [...this.state.results, ...result] });
     } else {
+      //GET BY ID
       let response = await fetch(
-        process.env.REACT_APP_BASE_URL + `/profile/${id}` + content + idContent,
+        process.env.REACT_APP_BASE_URL +
+          `/profiles/${id}` +
+          content +
+          idContent,
         {
           headers: {
             Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
@@ -80,7 +88,7 @@ export default class EducationBlock extends PureComponent {
   //FETCH POST
   fetchPost = async (id, content) => {
     let response = await fetch(
-      process.env.REACT_APP_BASE_URL + `profile/${id}/${content}`,
+      process.env.REACT_APP_BASE_URL + `/${content}/${id}`,
       {
         method: "POST",
         body: JSON.stringify(this.state.experience),
@@ -98,7 +106,7 @@ export default class EducationBlock extends PureComponent {
   //FETCH PUT
   fetchPut = async (id, content, contentId) => {
     let response = await fetch(
-      process.env.REACT_APP_BASE_URL + `profile/${id}/${content}/${contentId}`,
+      process.env.REACT_APP_BASE_URL + `profiles/${id}/${content}/${contentId}`,
       {
         method: "PUT",
         body: JSON.stringify(this.state.experience),
@@ -114,7 +122,7 @@ export default class EducationBlock extends PureComponent {
 
   fetchDelete = async (id, content, contentId) => {
     let response = await fetch(
-      process.env.REACT_APP_BASE_URL + `profile/${id}/${content}/${contentId}`,
+      process.env.REACT_APP_BASE_URL + `profiles/${id}/${content}/${contentId}`,
       {
         method: "DELETE",
         headers: {
@@ -122,8 +130,7 @@ export default class EducationBlock extends PureComponent {
         },
       }
     );
-    let result = await response.json();
-    console.log(result);
+    // let result = await response.json();
   };
 
   //SHOW MODAL FUNCTION
@@ -173,16 +180,18 @@ export default class EducationBlock extends PureComponent {
   //EDIT FUNCTION
   editFillExp = async (id) => {
     let userId = this.props.user; /*._id */
-    let result = [];
-    this.fetchGet(userId, "/experiences/", id, result);
-    let exp = await {
-      role: result.role,
-      employment: "",
-      company: result.company,
-      area: result.area,
-      startDate: result.startDate,
-      endDate: result.endDate,
-    };
+    // this.fetchGet(userId, "/experiences/", id, result);
+    let experience = await fetchSingleExperience(userId, id);
+    // console.log(experience);
+    // this.fillExp();
+    // let exp = {
+    //   role: result.role,
+    //   employment: "",
+    //   company: result.company,
+    //   area: result.area,
+    //   startDate: result.startDate,
+    //   endDate: result.endDate,
+    // };
     this.setState({
       form: ExperienceForm,
       titleModal: "Edit Experience",
@@ -190,46 +199,59 @@ export default class EducationBlock extends PureComponent {
       saveFunction: this.editExp,
       idToEdit: id,
       buttonModal: "Edit",
-      experience: exp,
+      experience: experience[0],
     });
     this.showModal();
   };
 
   //POST EXPERIENCE
   saveExp = async () => {
-    let id = this.props.user; /*._id*/
-    let postResult = await this.fetchPost(id, "experiences");
-    this.postImgExp(postResult._id);
+    // let id = this.props.user; /*._id*/
+    // let postResult = await this.fetchPost(id, "experiences");
+    // this.postImgExp(postResult._id, postResult);
+    this.createExp();
     this.showModal();
   };
 
+  createExp = async () => {
+    let id = this.props.user; /*._id*/
+    let postResult = await createExperience(id, this.state.experience);
+    let image = document.querySelector("#expFile");
+    if (image.files[0]) {
+      await this.createImg(postResult._id);
+    }
+    this.fetchUsers();
+  };
+
+  createImg = async (postId) => {
+    let id = this.props.user; /*._id*/
+    let image = document.querySelector("#expFile");
+    let response = await submitExperienceImage(id, image, postId);
+    alert(response);
+  };
+
   //POST IMAGE EXPERIENCE
-  postImgExp = async (expId) => {
+  postImgExp = async (expId, post) => {
     let userId = this.props.user;
     let image = document.querySelector("#expFile");
     let data = new FormData();
-    data.append("experience", image.files[0]);
+    data.append("image", image.files[0]);
     let response = await fetch(
       process.env.REACT_APP_BASE_URL +
-        `profile/${userId}/experiences/${expId}/picture`,
+        `/experiences/${userId}/${expId}/picture`,
       {
         method: "POST",
         body: data,
-        headers: new Headers({
-          //"Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-        }),
       }
     );
     let result = await response.json();
-    console.log(result);
+    this.fetchGet(userId, "/experiences", null, []);
     this.setState({ experience: { image: result.image } });
   };
 
   //LOAD ALL EXPERIENCES
   loadExp() {
     let id = this.props.user; /*._id*/
-    console.log(id);
     let result = [];
     this.fetchGet(id, "/experiences", null, result);
   }
@@ -237,28 +259,50 @@ export default class EducationBlock extends PureComponent {
   //EDIT EXPERIENCE
   editExp = async () => {
     let id = this.props.user; /*._id*/
-    this.fetchPut(id, "experiences", this.state.idToEdit);
-    this.postImgExp(this.state.idToEdit);
-    this.setState({ results: [] });
-    console.log(this.state.results);
-    this.loadExp();
+    // this.fetchPut(id, "experiences", this.state.idToEdit);
+    await updateSingleExperience(
+      id,
+      this.state.idToEdit,
+      this.state.experience
+    );
+    // console.log(res);
+    let image = document.querySelector("#expFile");
+    if (image.files[0]) {
+      await this.createImg(this.state.idToEdit);
+    }
+
+    // this.postImgExp(this.state.idToEdit);
+    // this.setState({ results: [] });
+    // console.log(this.state.results);
+    // this.loadExp();
+    this.fetchUsers();
     this.showModal();
   };
 
   //DELETE EXPERIENCE
-  deleteExp = (id) => {
+  deleteExp = async (id) => {
     let userId = this.props.user; /*._id*/
-    this.fetchDelete(userId, "experiences", id);
-    let result = [];
-    this.fetchGet(id, "/experiences", null, result);
+    // this.fetchDelete(userId, "experiences", id);
+    let result = await deleteExperience(userId, id);
+    alert(result);
+    this.fetchUsers();
+    // let result = [];
+    // this.fetchGet(id, "/experiences", null, result);
   };
 
   componentDidMount() {
     this.loadExp();
+    this.fetchUsers();
   }
 
+  fetchUsers = async () => {
+    let experiences = await fetchUserExperiences(this.props.user);
+    this.setState({ experiences: experiences });
+  };
+
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.results !== this.state.results) {
+    if (prevState.results.length !== this.state.results.length) {
+      // this.loadExp();
     }
   }
 
@@ -341,8 +385,8 @@ export default class EducationBlock extends PureComponent {
               style={{ display: `${showBtn}` }}
             ></i>
           </header>
-          {this.state.results.length > 0 &&
-            this.state.results.map((result, index) => {
+          {this.state.experiences.length > 0 &&
+            this.state.experiences.map((result, index) => {
               return (
                 <Row className="exp-details" key={index}>
                   <Col xs={2}>
