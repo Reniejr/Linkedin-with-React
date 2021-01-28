@@ -3,13 +3,23 @@ import LikeActions from "./LikeActions";
 import { withAuth0 } from "@auth0/auth0-react";
 
 class ActionButtons extends React.Component {
-  state = {
-    showLike: false,
-    userId: null,
-    liked: false,
-    reacts: [],
-    userReaction: 0,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      showLike: false,
+      userId: null,
+      liked: false,
+      reacts: [],
+      userReaction: 0,
+    };
+  }
+  // 	state = {
+  //     showLike: false,
+  //     userId: null,
+  //     liked: false,
+  //     reacts: [],
+  //     userReaction: 0,
+  //   };
 
   componentDidMount() {
     if (this.props.auth0) {
@@ -18,22 +28,30 @@ class ActionButtons extends React.Component {
       this.setState({ userId: currentId });
     }
     if (this.props.reacts !== null && this.props.reacts !== undefined) {
-      console.log(this.props.reacts);
-      this.setState({ reacts: this.props.reacts.reactions });
+      this.setState({ reacts: this.props.reacts.reactions }, () =>
+        console.log(this.props.reacts)
+      );
       this.isUserReact();
     }
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    if (this.props.reacts !== prevProps.reacts) {
+    if (this.state.reacts.length !== prevState.reacts.length) {
       if (this.props.reacts !== null && this.props.reacts !== undefined) {
         console.log(this.props.reacts);
         this.setState({ reacts: this.props.reacts.reactions });
         this.isUserReact();
       }
     }
+    if (this.props.reacts !== prevProps.reacts && this.props.reacts !== null) {
+      console.log(this.props.reacts);
+      this.setState({ reacts: this.props.reacts.reactions });
+      this.isUserReact();
+    }
+    // if (this.state.reacts.length && prevState.reacts.length) {
+    //   this.setState({ reacts: this.props.reacts.reactions });
+    // }
     if (this.state.userId !== prevState.userId) {
-      console.log("SETUSER");
       const { user } = this.props.auth0;
       let currentId = user.sub.slice(6);
       this.setState({ userId: currentId });
@@ -42,13 +60,10 @@ class ActionButtons extends React.Component {
 
   isUserReact = () => {
     let reacts = this.state.reacts;
-    console.log(this.state.userId);
+
     if (reacts.length > 0) {
-      console.log(reacts);
       reacts.forEach((react) => {
-        console.log(react.user._id, this.state.userId);
         if (react.user._id.localeCompare(this.state.userId) === 0) {
-          console.log(react.react);
           this.setState({ userReaction: react.react });
         }
       });
