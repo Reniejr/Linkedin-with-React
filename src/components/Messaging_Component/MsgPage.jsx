@@ -55,6 +55,7 @@ class MsgPage extends PureComponent {
 
   setAllUsers = async () => {
     // const allUsers = await getAllProfiles(this.state.username);
+    //COMMENTO
     const allUsers = this.props.selectedUsers;
     this.setState({ allUsers });
 
