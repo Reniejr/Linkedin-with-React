@@ -1,13 +1,14 @@
 import React from "react";
 import "../../App.css";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 
 import Posts from "../home_subcomponents/Posts";
 import MakePost from "../home_subcomponents/MakePost";
 import LeftSide from "../sideComponents/LeftSide";
 import RightSide from "../sideComponents/RightSide";
 import { withAuth0 } from "@auth0/auth0-react";
+import EditPost from "../home_subcomponents/EditPost";
 
 class Home extends React.Component {
   // fetch posts here
@@ -20,7 +21,7 @@ class Home extends React.Component {
 
     formData: null,
     addImageModalShow: false,
-
+    userId: null,
     postList: [],
     isLoading: true,
   };
@@ -31,7 +32,7 @@ class Home extends React.Component {
 
       if (response.ok) {
         const posts = await response.json();
-        console.log("posts", posts);
+        // console.log("posts", posts);
         this.setState({
           postList: posts.reverse().slice(0, 50),
           isLoading: false,
@@ -76,22 +77,25 @@ class Home extends React.Component {
   };
 
   fetchPost = async () => {
-    const { user } = this.props.auth0;
-    let currentId = user.sub.slice(6);
-    let newPost = { ...this.state.post, user: currentId };
-    let response = await fetch(
-      process.env.REACT_APP_BASE_URL + `/posts/${currentId}`,
-      {
-        method: "POST",
-        body: JSON.stringify(newPost),
-        headers: new Headers({
-          "Content-Type": "application/json",
-        }),
-      }
-    );
-    let result = await response.json();
+    // const { user } = this.props.auth0;
+    // console.log(this.props.auth0);
+    // let currentId = user.sub.slice(6);
+    if (this.state.userId) {
+      let newPost = { ...this.state.post, user: this.state.userId };
+      let response = await fetch(
+        process.env.REACT_APP_BASE_URL + `/posts/${this.state.userId}`,
+        {
+          method: "POST",
+          body: JSON.stringify(newPost),
+          headers: new Headers({
+            "Content-Type": "application/json",
+          }),
+        }
+      );
+      let result = await response.json();
 
-    let imageUpload = await this.uploadImage(result._id);
+      let imageUpload = await this.uploadImage(result._id);
+    }
   };
 
   postConfirm = async () => {
@@ -122,9 +126,12 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    const { user } = this.props.auth0;
-    let currentId = user.sub.slice(6);
-    console.log(currentId);
+    if (this.props.auth0) {
+      const { user } = this.props.auth0;
+      let currentId = user.sub.slice(6);
+      this.setState({ userId: currentId });
+    }
+
     this.getPosts();
   }
 
@@ -137,7 +144,13 @@ class Home extends React.Component {
         <Container>
           <Row>
             <Col xs={3}>
-              <LeftSide />
+              {this.state.userId ? (
+                <LeftSide userId={this.state.userId} />
+              ) : (
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              )}
             </Col>
             <Col xs={6}>
               <MakePost
@@ -160,7 +173,9 @@ class Home extends React.Component {
                 postSize={this.state.postSize}
                 posts={this.state.postList}
                 isLoading={this.state.isLoading}
+                getPosts={this.getPosts}
               />
+              {/* <EditPost /> */}
             </Col>
             <Col xs={3}>
               <RightSide />

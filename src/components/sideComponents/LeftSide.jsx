@@ -1,26 +1,21 @@
 import React, { Component } from "react";
-import { Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col, Spinner } from "react-bootstrap";
 import "../../App.css";
 
 class LeftSide extends React.Component {
   state = {
-    user: {},
+    user: null,
   };
 
   fetchUser = async () => {
     try {
-      const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `profile/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-          },
-        }
-      );
-
-      const user = await response.json();
-      console.log(user);
-      this.setState({ user });
+      if (typeof this.props.userId === "string") {
+        const response = await fetch(
+          process.env.REACT_APP_BASE_URL + `/profiles/${this.props.userId}`
+        );
+        const user = await response.json();
+        this.setState({ user });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -35,25 +30,38 @@ class LeftSide extends React.Component {
       <>
         <Card style={{ borderRadius: "10px" }}>
           <Card.Header className="card-header">
-            <Card.Img
-              style={{
-                height: "70px",
-                width: "70px",
-                borderRadius: "50%",
-                alignSelf: "center",
-              }}
-              variant="top"
-              src={this.state.user.image}
-            />
+            {this.state.user ? (
+              <Card.Img
+                style={{
+                  height: "70px",
+                  width: "70px",
+                  borderRadius: "50%",
+                  alignSelf: "center",
+                }}
+                variant="top"
+                src={this.state.user.image}
+              />
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
           </Card.Header>
 
           <Card.Body>
-            <Card.Title>
-              Welcome,{this.state.user.name}! <br />
-              <a style={{ fontSize: "12px" }} href="/">
-                Add a Photo
-              </a>
-            </Card.Title>
+            {this.state.user ? (
+              <Card.Title>
+                Welcome,{this.state.user.name}! <br />
+                <a style={{ fontSize: "12px" }} href="/">
+                  Add a Photo
+                </a>
+              </Card.Title>
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
+
             <hr />
             <Card.Text>
               <Row>
@@ -105,7 +113,12 @@ class LeftSide extends React.Component {
           </Card.Body>
         </Card>
         <Card
-          style={{ borderRadius: "10px", marginTop: "8px", position: 'sticky', top: '60px'}}
+          style={{
+            borderRadius: "10px",
+            marginTop: "8px",
+            position: "sticky",
+            top: "60px",
+          }}
         >
           <Card.Body>
             <Card.Text>

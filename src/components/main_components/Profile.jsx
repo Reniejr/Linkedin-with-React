@@ -18,6 +18,8 @@ import PeopleAlsoViewed from "../sideComponents/PeopleAlsoViewed";
 import PeopleYouMayKnow from "../sideComponents/PeopleYouMayKnow";
 import InLearning from "../sideComponents/InLearning";
 import { withAuth0 } from "@auth0/auth0-react";
+import { Spinner } from "react-bootstrap";
+import Loading from "../authComponents/Loading";
 
 class Profile extends React.Component {
   state = {
@@ -75,19 +77,19 @@ class Profile extends React.Component {
     let id = this.props.match.params.id;
     let url = "";
     if (this.props.match.params.id.localeCompare("me") === 0) {
-      const { user } = this.props.auth0;
-      let currentId = user.sub.slice(6);
-      url = process.env.REACT_APP_BASE_URL + `/profiles/${currentId}`;
+      if (this.props.auth0.user) {
+        const { user } = this.props.auth0;
+        let currentId = user.sub.slice(6);
+        url = process.env.REACT_APP_BASE_URL + `/profiles/${currentId}`;
+      }
     } else {
       url = process.env.REACT_APP_BASE_URL + `/profiles/${id}`;
     }
     try {
       const response = await fetch(url);
-      console.log(response);
 
       if (response.ok) {
         const user = await response.json();
-        console.log("test", user);
         this.setState({ user }, () => {
           if (this.props.match.params.id.localeCompare("me") === -1) {
             this.setState({ isShowEditButton: false });
@@ -99,7 +101,6 @@ class Profile extends React.Component {
           }
         });
       } else {
-        console.log("POSTING");
         this.postBasicProfile();
       }
     } catch (err) {
@@ -109,32 +110,32 @@ class Profile extends React.Component {
 
   postBasicProfile = async () => {
     try {
-      const { user } = this.props.auth0;
-
-      // this.setState({ user: user });
-      let profile = {
-        _id: user.sub.slice(6),
-        name: user.nickname,
-        email: user.email,
-        image: user.picture,
-        bio: "bio here",
-        area: "area here",
-        username: user.name,
-        surname: "surname here",
-      };
-      let response = fetch(`${process.env.REACT_APP_BASE_URL}/profiles`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
-      });
-      if (response.ok) {
-        alert("successfuly added");
-        let result = await response.json();
-        console.log(result);
-      } else {
-        alert("Unable to post something went wrong");
-        let error = await response.json();
-        console.log(error);
+      if (this.props.auth0.user) {
+        const { user } = this.props.auth0;
+        let profile = {
+          _id: user.sub.slice(6),
+          name: user.nickname,
+          email: user.email,
+          image: user.picture,
+          bio: "bio here",
+          area: "area here",
+          username: user.name,
+          surname: "surname here",
+        };
+        let response = fetch(`${process.env.REACT_APP_BASE_URL}/profiles`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profile),
+        });
+        if (response.ok) {
+          alert("successfuly added");
+          let result = await response.json();
+          alert(result);
+        } else {
+          alert("Unable to post something went wrong");
+          let error = await response.json();
+          console.log(error);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -148,7 +149,6 @@ class Profile extends React.Component {
       );
 
       const users = await response.json();
-      console.log(users);
       this.setState({ users });
     } catch (err) {
       console.log(err);
@@ -156,8 +156,12 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    this.getProfileInfo();
-    this.getProfile();
+    if (this.props.auth0.isLoading) {
+      return <Loading />;
+    } else {
+      this.getProfileInfo();
+      this.getProfile();
+    }
   }
 
   componentDidUpdate(prevProp, prevState) {
@@ -167,6 +171,10 @@ class Profile extends React.Component {
       prevState.isImgUploaded !== this.state.isImgUploaded
     ) {
       this.getProfileInfo();
+    }
+    if (prevProp.auth0.isLoading !== this.props.auth0.isLoading) {
+      this.getProfileInfo();
+      this.getProfile();
     }
   }
 
@@ -199,10 +207,17 @@ class Profile extends React.Component {
             <AboutBlock isShowEditBtn={this.state.isShowEditButton} />
             <Dashboard />
             <Activity />
-            <EducationBlock
-              isShowEditBtn={this.state.isShowEditButton}
-              user={this.state.user._id}
-            />
+            {this.state.user._id ? (
+              <EducationBlock
+                isShowEditBtn={this.state.isShowEditButton}
+                user={this.state.user._id}
+              />
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
+
             <Skills isShowEditBtn={this.state.isShowEditButton} />
             <Interests />
           </div>

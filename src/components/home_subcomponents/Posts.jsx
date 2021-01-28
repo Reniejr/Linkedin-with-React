@@ -39,7 +39,7 @@ class Posts extends Component {
   // }
 
   render() {
-    const { posts, isLoading } = this.props;
+    const { posts, isLoading, getPosts } = this.props;
     return (
       <div>
         {isLoading && (
@@ -50,7 +50,14 @@ class Posts extends Component {
           />
         )}
         {posts.map((post) => {
-          return <PostContent id={post._id} key={post._id} post={post} />;
+          return (
+            <PostContent
+              id={post._id}
+              key={post._id}
+              post={post}
+              getPosts={getPosts}
+            />
+          );
         })}
       </div>
     );

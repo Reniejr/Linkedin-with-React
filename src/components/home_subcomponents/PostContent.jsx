@@ -138,8 +138,9 @@ class PostContent extends Component {
     // this.getPostImage();
   }
   render() {
-    const { post } = this.props;
-    console.log(this.props);
+
+    const { post, getPosts } = this.props;
+
     return (
       <>
         {!this.state.isDeleted && (
@@ -158,6 +159,7 @@ class PostContent extends Component {
                 toggleModal={true}
                 post={post}
                 userId={post.user._id}
+                getPosts={getPosts}
               ></DropdownPost>
               <Row>
                 <Col md={12} className="mt-4">
@@ -170,8 +172,11 @@ class PostContent extends Component {
                       />
                     )}
                     <div className="user-info float-left d-flex flex-column">
-                      <h5 className="ml-0">
-                        {post.user.name} {post.user.surname}
+                      <h5
+                        className="ml-0"
+                        style={{ textTransform: "Capitalize" }}
+                      >
+                        {post.user.name}
                         &middot; <span>1st</span>
                       </h5>
                       <p style={{ textAlign: "left" }} className="ml-2 ">
