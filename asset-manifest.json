@@ -1,0 +1,34 @@
+{
+  "files": {
+    "main.css": "/Linkedin-with-React/static/css/main.68684f7d.chunk.css",
+    "main.js": "/Linkedin-with-React/static/js/main.e139f573.chunk.js",
+    "main.js.map": "/Linkedin-with-React/static/js/main.e139f573.chunk.js.map",
+    "runtime-main.js": "/Linkedin-with-React/static/js/runtime-main.2a6e5ac9.js",
+    "runtime-main.js.map": "/Linkedin-with-React/static/js/runtime-main.2a6e5ac9.js.map",
+    "static/css/2.43b2b750.chunk.css": "/Linkedin-with-React/static/css/2.43b2b750.chunk.css",
+    "static/js/2.7858f6bc.chunk.js": "/Linkedin-with-React/static/js/2.7858f6bc.chunk.js",
+    "static/js/2.7858f6bc.chunk.js.map": "/Linkedin-with-React/static/js/2.7858f6bc.chunk.js.map",
+    "static/js/3.2919f3fa.chunk.js": "/Linkedin-with-React/static/js/3.2919f3fa.chunk.js",
+    "static/js/3.2919f3fa.chunk.js.map": "/Linkedin-with-React/static/js/3.2919f3fa.chunk.js.map",
+    "index.html": "/Linkedin-with-React/index.html",
+    "static/css/2.43b2b750.chunk.css.map": "/Linkedin-with-React/static/css/2.43b2b750.chunk.css.map",
+    "static/css/main.68684f7d.chunk.css.map": "/Linkedin-with-React/static/css/main.68684f7d.chunk.css.map",
+    "static/js/2.7858f6bc.chunk.js.LICENSE.txt": "/Linkedin-with-React/static/js/2.7858f6bc.chunk.js.LICENSE.txt",
+    "static/media/1-like.919fbb1d.png": "/Linkedin-with-React/static/media/1-like.919fbb1d.png",
+    "static/media/2-celebrate.62916f56.png": "/Linkedin-with-React/static/media/2-celebrate.62916f56.png",
+    "static/media/3-support.07c43289.png": "/Linkedin-with-React/static/media/3-support.07c43289.png",
+    "static/media/4-love.24249943.png": "/Linkedin-with-React/static/media/4-love.24249943.png",
+    "static/media/5-insightful.5e1ce535.png": "/Linkedin-with-React/static/media/5-insightful.5e1ce535.png",
+    "static/media/6-logo.b9bf5a34.png": "/Linkedin-with-React/static/media/6-logo.b9bf5a34.png",
+    "static/media/footericon.1ce2cfc6.png": "/Linkedin-with-React/static/media/footericon.1ce2cfc6.png",
+    "static/media/loading.330b7d99.svg": "/Linkedin-with-React/static/media/loading.330b7d99.svg",
+    "static/media/logo.074d85a5.png": "/Linkedin-with-React/static/media/logo.074d85a5.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2a6e5ac9.js",
+    "static/css/2.43b2b750.chunk.css",
+    "static/js/2.7858f6bc.chunk.js",
+    "static/css/main.68684f7d.chunk.css",
+    "static/js/main.e139f573.chunk.js"
+  ]
+}
