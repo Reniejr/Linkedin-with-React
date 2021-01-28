@@ -26,12 +26,16 @@ class PostContent extends Component {
 
     showComment: false,
     fetchComment: false,
-
+    post: null,
     user: {},
     postImage: null,
     imgPreviewModal: false,
     isDeleted: false,
   };
+
+  componentDidMount() {
+    this.setState({ post: this.props.post });
+  }
 
   getProfileInfo = async () => {
     const userId = JSON.parse(window.localStorage.getItem("userId"));
@@ -55,7 +59,7 @@ class PostContent extends Component {
         this.setState({ addComment });
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   handleComment = () => {
@@ -68,7 +72,7 @@ class PostContent extends Component {
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   //*TO UPDATE THE COMMENT FIELD
   //* Go to the submitOurComment function()
-  updateCommentField = e => {
+  updateCommentField = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
 
@@ -138,7 +142,6 @@ class PostContent extends Component {
     // this.getPostImage();
   }
   render() {
-
     const { post, getPosts } = this.props;
 
     return (
@@ -212,10 +215,13 @@ class PostContent extends Component {
                 </Col>
                 <Col md={12} className="icon-container d-flex flex-row">
                   {/* //*ActionButtons::::::(the button to send the comment is here) */}
-                  <ActionButtons
-                    onClick={this.updateCommentField}
-                    onComment={this.handleComment}
-                  />
+                  {this.props.post && (
+                    <ActionButtons
+                      reacts={this.props.post.reactions}
+                      onClick={this.updateCommentField}
+                      onComment={this.handleComment}
+                    />
+                  )}
                 </Col>
 
                 <div className={this.state.showComment ? "d-block" : "d-none"}>
