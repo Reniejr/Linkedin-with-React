@@ -1,0 +1,6 @@
+.drop-comment-container {
+  padding: 10px 20px;
+  background-color: white;
+  display: flex;
+  justify-content: flex-end;
+}

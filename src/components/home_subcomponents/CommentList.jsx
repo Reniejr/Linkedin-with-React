@@ -3,6 +3,11 @@ import { ListGroup, Badge, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { Spinner, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { AiFillEdit } from "react-icons/ai";
+import { TiDelete } from "react-icons/ti";
+import CommentDropDown from "./CommentDropDown";
+//STYLE
+import "../css/comment-drop.css";
 const { REACT_APP_BASE_URL } = process.env;
 
 class CommentList extends React.Component {
@@ -122,86 +127,67 @@ class CommentList extends React.Component {
         <div className="mb-5">
           {this.state.ourComments.map((comment, index) => {
             return (
-              <>
-                <div className="d-flex flex-row">
-                  {/* <Link to={`/profile/${this.props.userId}`}> */}
-                  <img
-                    className="comment-user-avatar mt-1 user-comment-icon text-left"
-                    src={comment.user.image}
-                    alt="comment-user-avatar"
-                  />
-                  {/* </Link> */}
-                  <ListGroup
-                    key={index}
-                    className="comment-item d-flex justify-content-between mb-3"
-                  >
-                    <ListGroup.Item className="text-dark border-0 d-flex flex-column text-left">
-                      <Row className="d-flex d-flex-between">
-                        <Col xs={10}>
-                          <Link
-                            className="d-inline-block"
-                            to={`/profile/${this.props.postId}`}
-                          >
-                            <h8 className="comment-user-name font-weight-bold">
-                              {comment.user.name}
-                            </h8>
-                          </Link>
-                        </Col>
+              <div className="d-flex flex-row">
+                {/* <Link to={`/profile/${this.props.userId}`}> */}
+                <img
+                  className="comment-user-avatar mt-1 user-comment-icon text-left"
+                  src={comment.user.image}
+                  alt="comment-user-avatar"
+                />
+                {/* </Link> */}
+                <ListGroup
+                  key={index}
+                  className="comment-item d-flex justify-content-between mb-3"
+                >
+                  <ListGroup.Item className="text-dark border-0 d-flex flex-column text-left">
+                    <Row className="d-flex d-flex-between">
+                      <Col xs={10}>
+                        <Link
+                          className="d-inline-block"
+                          to={`/profile/${this.props.postId}`}
+                        >
+                          <h8 className="comment-user-name font-weight-bold">
+                            {comment.user.name}
+                          </h8>
+                        </Link>
+                      </Col>
 
-                        <Col className="px-0">
-                          <Dropdown>
-                            <Dropdown.Toggle variant="muted border-0">
-                              <HiOutlineDotsHorizontal
-                                onClick={() => this.showDropdown()}
-                              />
-                            </Dropdown.Toggle>
+                      <Col className={this}>
+                        {/* <div onClick={() => this.showDropdown()}> */}
+                        <div onClick={console.log(EventTarget.name)}>
+                          <HiOutlineDotsHorizontal
+                            style={{ cursor: "pointer" }}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
 
-                            <Dropdown.Menu className="position-absolute">
-                              <Dropdown.Item href="#/action-1">
-                                Action
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </Col>
-                      </Row>
-                      {/* <div>
-										<img
-											className='user-img float-left'
-											src={comment.author.image}
-											alt='user-avatar'
-										/>
-										<div className='user-info float-left d-flex flex-column'>
-											<Link
-												to={`/profile/${comment.author._id}`}>
-												<h5 className='ml-0'>
-													{comment.author.name}{" "}
-													{comment.author.surname}
-													&middot; <span>1st</span>
-												</h5>
-											</Link>
-											<p
-												style={{
-													textAlign: "left",
-												}}
-												className='ml-2 '>
-												{comment.author.title}
-											</p>
-										</div>
-
-										<div className='mt-1 '>
-											<i className='three-dot float-right fas fa-ellipsis-h'></i>
-										</div>
-									</div> */}
-                      <p
-                        style={{ textAlign: "left" }}
-                        className="float-left font-weight-light"
-                      >
-                        {comment.text}
-                      </p>
-                    </ListGroup.Item>
-                  </ListGroup>
-                </div>
-              </>
+                    <p
+                      style={{ textAlign: "left" }}
+                      className="float-left font-weight-light"
+                    >
+                      {comment.text}
+                    </p>
+                  </ListGroup.Item>
+                  <div className=" drop-comment-container d-flex align-item-end">
+                    <CommentDropDown
+                      className="comment-dropdown d-flex flex-column align-items-end"
+                      show={this.state.dropdown}
+                    >
+                      <ul>
+                        <li className="d-flex">
+                          <AiFillEdit />
+                          <span className="pl-2 py-1">Edit</span>
+                        </li>
+                        <li className="d-flex">
+                          <TiDelete />
+                          <span className="pl-1 bottom-1">Delete</span>
+                        </li>
+                      </ul>
+                    </CommentDropDown>
+                  </div>
+                </ListGroup>
+              </div>
             );
           })}
         </div>
