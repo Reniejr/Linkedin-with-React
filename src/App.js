@@ -6,7 +6,7 @@ import NavBar from "./components/NavBar";
 import Profile from "./components/main_components/Profile";
 
 import { Route } from "react-router-dom";
-import {HashRouter as Router} from "react-router-dom"
+import {BrowserRouter as Router} from "react-router-dom"
 
 import ShowSearchResult from "./components/main_components/ShowSearchResult";
 
