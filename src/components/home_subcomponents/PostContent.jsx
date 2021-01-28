@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-// const { REACT_APP_BASE_URL } = process.env;
+
 import { Link } from "react-router-dom";
 import ActionButtons from "./ActionButtons";
 import AddComment from "./AddComment";
@@ -9,21 +9,24 @@ import CommentList from "./CommentList";
 import PostImage from "./PostImage";
 import DropdownPost from "./DropdowPost";
 import ImagePreviewModal from "../main_components/ImagePreviewModal";
+
 import { withAuth0 } from "@auth0/auth0-react";
 
 class PostContent extends Component {
   state = {
     comments: [],
     addComment: {
-      comment: "",
+      text: "",
       author: {},
       test: "test",
       rate: 1,
       elementId: this.props.post._id,
     },
     submittedSize: 0,
+
     showComment: false,
     fetchComment: false,
+
     user: {},
     postImage: null,
     imgPreviewModal: false,
@@ -31,15 +34,20 @@ class PostContent extends Component {
   };
 
   getProfileInfo = async () => {
-    // const userId = JSON.parse(window.localStorage.getItem("userId"));
-    const { user } = this.props.auth0;
-    let currentId = user.sub.slice(6);
+    const userId = JSON.parse(window.localStorage.getItem("userId"));
     try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_URL + `/profiles/${currentId}`
+        process.env.REACT_APP_BASE_URL +
+          `profile/${userId}/${this.props.post._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+          },
+        }
       );
 
       const user = await response.json();
+      console.log(user);
       this.setState({ user }, () => {
         let addComment = { ...this.state.addComment };
         addComment.author = this.state.user;
@@ -50,7 +58,6 @@ class PostContent extends Component {
       console.log(err);
     }
   };
-
   handleComment = () => {
     this.setState({
       showComment: !this.state.showComment,
@@ -58,13 +65,22 @@ class PostContent extends Component {
     });
   };
 
-  updateCommentField = (e) => {
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //*TO UPDATE THE COMMENT FIELD
+  //* Go to the submitOurComment function()
+  updateCommentField = e => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
-      this.submitComment();
+
+      //*submitOurComment
+      this.submitOurComment();
+
+      this.setState({ addComment: { ...this.state.addComment, text: "" } });
     } else {
       let addComment = { ...this.state.addComment };
       let currentId = e.currentTarget.name;
+
+      //   console.log(e.currentTarget.value);
 
       addComment[currentId] = e.currentTarget.value;
 
@@ -72,12 +88,18 @@ class PostContent extends Component {
     }
   };
 
-  submitComment = async () => {
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //*TO SUBMIT THE COMMENTS
+  submitOurComment = async () => {
     // e.preventDefault();
+    const { user } = this.props.auth0;
+
+    let userId = user.sub.slice(6);
+    console.log(userId);
 
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/comments/",
+        `${process.env.REACT_APP_BASE_URL}/comments/${userId}/${this.props.id}`,
         {
           method: "POST",
           body: JSON.stringify(this.state.addComment),
@@ -88,11 +110,12 @@ class PostContent extends Component {
       );
 
       if (response.ok) {
+        console.log(response);
         // alert("Comment saved!");
         this.setState({
           addComment: {
-            comment: "",
-            author: "",
+            text: "",
+            image: "",
             rate: 1,
             elementId: this.props.post._id,
           },
@@ -100,21 +123,24 @@ class PostContent extends Component {
           submittedSize: this.state.submittedSize + 1,
         });
       } else {
-        alert("something went wrong");
+        alert("something went wrong here");
         let error = await response.json();
       }
     } catch (e) {
-      alert("something went wrong");
       console.log(e); // Error
     }
   };
+
+  //   *end::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   componentDidMount() {
     this.getProfileInfo();
     // this.getPostImage();
   }
   render() {
+
     const { post, getPosts } = this.props;
+
     return (
       <>
         {!this.state.isDeleted && (
@@ -185,11 +211,16 @@ class PostContent extends Component {
                   {/* <PostImage postId={post._id} /> */}
                 </Col>
                 <Col md={12} className="icon-container d-flex flex-row">
-                  <ActionButtons onComment={this.handleComment} />
+                  {/* //*ActionButtons::::::(the button to send the comment is here) */}
+                  <ActionButtons
+                    onClick={this.updateCommentField}
+                    onComment={this.handleComment}
+                  />
                 </Col>
 
                 <div className={this.state.showComment ? "d-block" : "d-none"}>
                   <Col md={12}>
+                    {/* //*AddComment::::::(this is the form) */}
                     <AddComment
                       addComment={this.state.addComment}
                       onChangeElement={this.updateCommentField}
@@ -198,11 +229,11 @@ class PostContent extends Component {
                   </Col>
 
                   <Col md={12}>
+                    {/* //*CommentList::::::(list of comments) */}
                     <CommentList
                       fetchComment={this.state.fetchComment}
                       submittedSize={this.state.submittedSize}
                       postId={post._id}
-                      post={post}
                     />
                   </Col>
                 </div>

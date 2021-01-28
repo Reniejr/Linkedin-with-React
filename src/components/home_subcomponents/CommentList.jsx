@@ -1,7 +1,8 @@
 import React from "react";
-import { ListGroup, Badge, Button, Row, Col } from "react-bootstrap";
+import { ListGroup, Badge, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { Spinner, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 const { REACT_APP_BASE_URL } = process.env;
 
 class CommentList extends React.Component {
@@ -10,11 +11,15 @@ class CommentList extends React.Component {
 
     //*:::::::::::::::
     ourComments: [],
-
+    dropdown: false,
     isLoading: true,
 
     deletedSize: 0,
     errorMessage: false,
+  };
+
+  showDropdown = () => {
+    this.setState({ dropdown: !this.state.dropdown });
   };
 
   //!BAD API THIS IS EVIL!!!!!!!!!!::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -45,6 +50,7 @@ class CommentList extends React.Component {
   //!::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   //*GOOD API, GOOD BOY :)::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //*GET
   getCommentsFromOurApi = async () => {
     try {
       let response = await fetch(
@@ -117,24 +123,47 @@ class CommentList extends React.Component {
           {this.state.ourComments.map((comment, index) => {
             return (
               <>
-                <Row>
+                <div className="d-flex flex-row">
+                  {/* <Link to={`/profile/${this.props.userId}`}> */}
                   <img
-                    className="comment-user-avatar mt-1 ml-5 mr-2 text-left"
+                    className="comment-user-avatar mt-1 user-comment-icon text-left"
                     src={comment.user.image}
                     alt="comment-user-avatar"
                   />
-
-                  <p className="d-inline-block font-weight-bold">
-                    {comment.user.name}
-                  </p>
-                </Row>
-
-                <div className="d-flex flex-row">
+                  {/* </Link> */}
                   <ListGroup
                     key={index}
                     className="comment-item d-flex justify-content-between mb-3"
                   >
-                    <ListGroup.Item className="text-dark d-flex flex-column">
+                    <ListGroup.Item className="text-dark border-0 d-flex flex-column text-left">
+                      <Row className="d-flex d-flex-between">
+                        <Col xs={10}>
+                          <Link
+                            className="d-inline-block"
+                            to={`/profile/${this.props.postId}`}
+                          >
+                            <h8 className="comment-user-name font-weight-bold">
+                              {comment.user.name}
+                            </h8>
+                          </Link>
+                        </Col>
+
+                        <Col className="px-0">
+                          <Dropdown>
+                            <Dropdown.Toggle variant="muted border-0">
+                              <HiOutlineDotsHorizontal
+                                onClick={() => this.showDropdown()}
+                              />
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu className="position-absolute">
+                              <Dropdown.Item href="#/action-1">
+                                Action
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </Col>
+                      </Row>
                       {/* <div>
 										<img
 											className='user-img float-left'
@@ -163,7 +192,10 @@ class CommentList extends React.Component {
 											<i className='three-dot float-right fas fa-ellipsis-h'></i>
 										</div>
 									</div> */}
-                      <p style={{ textAlign: "left" }} className="float-left">
+                      <p
+                        style={{ textAlign: "left" }}
+                        className="float-left font-weight-light"
+                      >
                         {comment.text}
                       </p>
                     </ListGroup.Item>
