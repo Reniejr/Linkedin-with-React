@@ -16,7 +16,7 @@ class PostContent extends Component {
   state = {
     comments: [],
     addComment: {
-      comment: "",
+      text: "",
       author: {},
       test: "test",
       rate: 1,
@@ -71,13 +71,16 @@ class PostContent extends Component {
   updateCommentField = e => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
-      alert("Great Shot!");
 
       //*submitOurComment
       this.submitOurComment();
+
+      this.setState({ addComment: { ...this.state.addComment, text: "" } });
     } else {
       let addComment = { ...this.state.addComment };
       let currentId = e.currentTarget.name;
+
+      //   console.log(e.currentTarget.value);
 
       addComment[currentId] = e.currentTarget.value;
 
@@ -111,8 +114,8 @@ class PostContent extends Component {
         // alert("Comment saved!");
         this.setState({
           addComment: {
-            comment: "",
-            author: "",
+            text: "",
+            image: "",
             rate: 1,
             elementId: this.props.post._id,
           },
@@ -136,6 +139,7 @@ class PostContent extends Component {
   }
   render() {
     const { post } = this.props;
+    console.log(this.props);
     return (
       <>
         {!this.state.isDeleted && (
@@ -211,7 +215,7 @@ class PostContent extends Component {
 
                 <div className={this.state.showComment ? "d-block" : "d-none"}>
                   <Col md={12}>
-                    {/**AddComment::::::(this is the form) */}
+                    {/* //*AddComment::::::(this is the form) */}
                     <AddComment
                       addComment={this.state.addComment}
                       onChangeElement={this.updateCommentField}
@@ -220,7 +224,7 @@ class PostContent extends Component {
                   </Col>
 
                   <Col md={12}>
-                    {/* CommentList::::::(list of comments) */}
+                    {/* //*CommentList::::::(list of comments) */}
                     <CommentList
                       fetchComment={this.state.fetchComment}
                       submittedSize={this.state.submittedSize}
