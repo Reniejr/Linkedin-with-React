@@ -3,39 +3,49 @@ import "./Messaging_Styles/MainMsg.scss";
 
 export default class MainMsg extends PureComponent {
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, currentChat } = this.props;
     return (
       <div id="main-msg">
         <header>New Message</header>
-        <input type="text" placeholder="Type a name or multiple names..." />
+        <input
+          type="text"
+          placeholder="Type a name or multiple names..."
+          value={
+            currentChat ? currentChat.user : "Type a name or multiple names..."
+          }
+        />
         <div className="msg-dialog">
-          {this.props.chat.map((msg) => {
-            return (
-              <div
-                className="text"
-                style={{
-                  alignItems:
-                    currentUser === msg.username ? "flex-end" : "flex-start",
-                }}
-              >
-                <p
+          {currentChat ? (
+            currentChat.chat.map((msg) => {
+              return (
+                <div
+                  className="text"
                   style={{
-                    color: currentUser === msg.username ? "blue" : "green",
+                    alignItems:
+                      currentUser === msg.username ? "flex-end" : "flex-start",
                   }}
                 >
-                  {msg.username}
-                </p>
-                <span
-                  style={{
-                    backgroundColor:
-                      currentUser === msg.username ? "blue" : "lime",
-                  }}
-                >
-                  {msg.message}
-                </span>
-              </div>
-            );
-          })}
+                  <p
+                    style={{
+                      color: currentUser === msg.username ? "blue" : "green",
+                    }}
+                  >
+                    {msg.username}
+                  </p>
+                  <span
+                    style={{
+                      backgroundColor:
+                        currentUser === msg.username ? "blue" : "lime",
+                    }}
+                  >
+                    {msg.message}
+                  </span>
+                </div>
+              );
+            })
+          ) : (
+            <></>
+          )}
         </div>
         <div className="msg-sender">
           <input

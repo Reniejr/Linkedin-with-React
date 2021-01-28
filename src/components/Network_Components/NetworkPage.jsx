@@ -4,11 +4,28 @@ import SideBarNetwork from "./SideBarNetwork";
 import { Container, Row, Col } from "react-bootstrap";
 import Invitations from "./Invitations";
 import Events from "./Events";
+import { getAllProfiles } from "./Utils";
+import { withAuth0 } from "@auth0/auth0-react";
 
-export default class NetworkPage extends PureComponent {
+class NetworkPage extends PureComponent {
   state = {
     counter: 0,
+    currentId: null,
+    allUsers: [],
   };
+
+  setAllUsers = async () => {
+    let allUsers = await getAllProfiles();
+    allUsers = allUsers.filter((user) => user._id !== this.state.currentId);
+    this.setState({ allUsers });
+  };
+
+  componentDidMount() {
+    this.setAllUsers();
+    const { user } = this.props.auth0;
+    let currentId = user.sub.slice(6);
+    this.setState({ currentId });
+  }
 
   counterFunction = () => {
     this.setState({ counter: this.state.counter + 1 });
@@ -23,7 +40,7 @@ export default class NetworkPage extends PureComponent {
           </Col>
           <Col xs={8}>
             <Invitations
-              userList={this.props.userList}
+              userList={this.state.allUsers}
               counterFunction={this.counterFunction}
             />
             <Events />
@@ -33,3 +50,4 @@ export default class NetworkPage extends PureComponent {
     );
   }
 }
+export default withAuth0(NetworkPage);
