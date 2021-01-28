@@ -42,7 +42,9 @@ class MsgPage extends PureComponent {
       const channel = pusher.subscribe(`${index + currentIndex}`);
       channels.push(channel);
     });
+    // let channel = pusher.subscribe("chat");
     return channels;
+    // return channel;
   };
 
   setUser = async () => {
@@ -55,6 +57,7 @@ class MsgPage extends PureComponent {
 
   setAllUsers = async () => {
     // const allUsers = await getAllProfiles(this.state.username);
+    //COMMENTO
     //COMMENTO
     const allUsers = this.props.selectedUsers;
     this.setState({ allUsers });
@@ -148,11 +151,13 @@ class MsgPage extends PureComponent {
       const channel = this.state.pusherConfig.filter(
         (channel) => channel.name === this.state.index.toString()
       )[0];
+      // const channel = this.pusherSetup();
       channel.bind("message", (data) => {
+        console.log(data);
         this.setState({
           currentChat: {
             ...this.state.currentChat,
-            chat: [...this.state.currentChat.chat, ...data],
+            chat: [...this.state.currentChat.chat, data],
           },
         });
       });
@@ -169,8 +174,7 @@ class MsgPage extends PureComponent {
         this.state.index,
         payload.message
       );
-      axios.post(`${process.env.REACT_APP_BASE_URL}/chat`, array);
-      e.currentTarget.value = " ";
+      axios.post(`${process.env.REACT_APP_BASE_URL}/chat`, payload);
       let temp = this.state.modify + 1;
       this.setState({
         modify: temp,
