@@ -144,24 +144,45 @@ class MsgPage extends PureComponent {
     await this.setAllUsers();
     const pusher = await this.pusherSetup(this.state.allUsers);
     this.setState({ pusherConfig: pusher });
+    if (pusher.length > 0) {
+      const channel = await pusher.filter(
+        (channel) => channel.name === this.state.index.toString()
+      )[0];
+      console.log(pusher);
+      if (channel !== undefined) {
+        await channel.bind("message", (data) => {
+          console.log(data);
+          this.setState({
+            currentChat: {
+              ...this.state.currentChat,
+              chat: [...this.state.currentChat.chat, data],
+            },
+          });
+        });
+        this.typeText = this.typeText.bind(this);
+      } else {
+      }
+    } else {
+      const channel = "0";
+    }
   };
 
   typeText = (e) => {
     if (e.keyCode === 13) {
-      const channel = this.state.pusherConfig.filter(
-        (channel) => channel.name === this.state.index.toString()
-      )[0];
-      // const channel = this.pusherSetup();
-      channel.bind("message", (data) => {
-        console.log(data);
-        this.setState({
-          currentChat: {
-            ...this.state.currentChat,
-            chat: [...this.state.currentChat.chat, data],
-          },
-        });
-      });
-      this.typeText = this.typeText.bind(this);
+      // const channel = this.state.pusherConfig.filter(
+      //   (channel) => channel.name === this.state.index.toString()
+      // )[0];
+      // // const channel = this.pusherSetup();
+      // channel.bind("message", (data) => {
+      //   console.log(data);
+      //   this.setState({
+      //     currentChat: {
+      //       ...this.state.currentChat,
+      //       chat: [...this.state.currentChat.chat, data],
+      //     },
+      //   });
+      // });
+      // this.typeText = this.typeText.bind(this);
       const payload = {
         message: {
           username: this.state.username,
