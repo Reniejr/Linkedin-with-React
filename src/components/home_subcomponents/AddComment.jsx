@@ -7,12 +7,12 @@ const AddComment = props => {
         <Form.Control
           className="commentArea"
           type="text"
-          name="comment"
+          name="text"
           //id='comment'
           rows={1}
           cols={50}
           placeholder="Add a comment..."
-          value={props.addComment.comment}
+          value={props.addComment.text}
           onChange={props.onChangeElement}
           onKeyDown={props.onChangeElement}
         />
