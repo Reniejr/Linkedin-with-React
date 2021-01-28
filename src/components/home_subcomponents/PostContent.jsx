@@ -89,6 +89,8 @@ class PostContent extends Component {
   };
 
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+  //*-------------POST--------------------
   //*TO SUBMIT THE COMMENTS
   submitOurComment = async () => {
     // e.preventDefault();
@@ -130,6 +132,48 @@ class PostContent extends Component {
       console.log(e); // Error
     }
   };
+
+  //*-------------PUT--------------------
+  // submitOurComment = async () => {
+  //   // e.preventDefault();
+  //   const { user } = this.props.auth0;
+
+  //   let userId = user.sub.slice(6);
+  //   console.log(userId);
+
+  //   try {
+  //     let response = await fetch(
+  //       // `${process.env.REACT_APP_BASE_URL}/comments/${this.state.comments}`,
+  //       {
+  //         method: "POST",
+  //         body: JSON.stringify(this.state.addComment),
+  //         headers: new Headers({
+  //           "Content-Type": "application/json",
+  //         }),
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       console.log(response);
+  //       // alert("Comment saved!");
+  //       this.setState({
+  //         addComment: {
+  //           text: "",
+  //           image: "",
+  //           rate: 1,
+  //           elementId: this.props.post._id,
+  //         },
+  //         errMessage: "",
+  //         submittedSize: this.state.submittedSize + 1,
+  //       });
+  //     } else {
+  //       alert("something went wrong here");
+  //       let error = await response.json();
+  //     }
+  //   } catch (e) {
+  //     console.log(e); // Error
+  //   }
+  // };
 
   //   *end::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
