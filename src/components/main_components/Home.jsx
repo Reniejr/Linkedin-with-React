@@ -1,5 +1,6 @@
 import React from "react";
 import "../../App.css";
+import "./STYLE/Home.scss";
 
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 
@@ -143,7 +144,7 @@ class Home extends React.Component {
       <div id="home-page">
         <Container>
           <Row>
-            <Col xs={3}>
+            <div className="left-side">
               {this.state.userId ? (
                 <LeftSide userId={this.state.userId} />
               ) : (
@@ -151,8 +152,8 @@ class Home extends React.Component {
                   <span className="sr-only">Loading...</span>
                 </Spinner>
               )}
-            </Col>
-            <Col xs={6}>
+            </div>
+            <div className="main-feed">
               <MakePost
                 addImageModalShow={this.state.addImageModalShow}
                 onHide={() => this.setState({ addImageModalShow: false })}
@@ -176,10 +177,10 @@ class Home extends React.Component {
                 getPosts={this.getPosts}
               />
               {/* <EditPost /> */}
-            </Col>
-            <Col xs={3}>
+            </div>
+            <div className="right-side">
               <RightSide />
-            </Col>
+            </div>
           </Row>
         </Container>
       </div>
