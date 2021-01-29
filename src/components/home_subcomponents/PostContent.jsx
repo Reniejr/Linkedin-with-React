@@ -220,6 +220,7 @@ class PostContent extends Component {
                       reacts={this.props.post.reactions}
                       onClick={this.updateCommentField}
                       onComment={this.handleComment}
+                      postId={this.props.post._id}
                     />
                   )}
                 </Col>

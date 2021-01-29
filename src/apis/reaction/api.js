@@ -3,6 +3,9 @@ export async function getReactionsByPostId(postId) {
     let response = await fetch(
       `${process.env.REACT_APP_BASE_URL}/reactions/${postId}`
     );
+    if (response.statusText === "Not Found") {
+      return null;
+    }
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -20,8 +23,8 @@ export async function postReaction(userId, postId, react) {
       `${process.env.REACT_APP_BASE_URL}/reactions/${userId}/${postId}`,
       {
         method: "POST",
-        headers: ("Content-Type", "application/json"),
-        body: react,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(react),
       }
     );
     if (response.ok) {
