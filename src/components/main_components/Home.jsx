@@ -81,7 +81,7 @@ class Home extends React.Component {
     }
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = async (prevProps, prevState) => {
     if (prevState.postList.length > 0) {
       if (
         prevState.postList[0].hasOwnProperty("reactions") !==
@@ -90,6 +90,14 @@ class Home extends React.Component {
         console.log("test");
         this.setState({ postList: this.state.postList });
       }
+    }
+    if (prevState.postList.length !== this.state.postList.length) {
+      await this.getPosts();
+    }
+    if (this.state.postSize !== prevState.postSize) {
+      console.log("STATE CHANGED");
+      await this.getPosts();
+      this.setState({ postList: this.state.postList });
     }
   };
 
@@ -122,7 +130,8 @@ class Home extends React.Component {
 
     setTimeout(() => {
       this.showModal();
-      this.setState({ postSize: this.state.postSize + 1, isLoading: true });
+      const temp = this.state.postSize + 1;
+      this.setState({ postSize: temp, isLoading: true });
     }, 100);
     setTimeout(async () => {
       await this.getPosts();

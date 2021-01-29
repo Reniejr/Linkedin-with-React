@@ -85,7 +85,11 @@ class ActionButtons extends React.Component {
         this.setState({ newReacts: reactions });
       }
     }
-    if (this.props.reacts !== prevProps.reacts && this.props.reacts !== null) {
+    if (
+      this.props.reacts !== prevProps.reacts &&
+      this.props.reacts !== null &&
+      this.props.reacts !== undefined
+    ) {
       this.setState({ reacts: this.props.reacts.reactions });
       this.isUserReact();
     }
