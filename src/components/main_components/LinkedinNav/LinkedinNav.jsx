@@ -41,7 +41,14 @@ export default class LinkedinNav extends PureComponent {
               onChange={this.props.handleSearch}
             />
           </div>
-          <ul className="menu" style={this.state.collapseMenu ? {} : {}}>
+          <ul
+            className="menu"
+            // style={
+            //   this.state.collapseMenu
+            //     ? { display: "block" }
+            //     : { display: "none" }
+            // }
+          >
             <li>
               <Link to="/">
                 <div
