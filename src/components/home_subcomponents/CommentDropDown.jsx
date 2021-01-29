@@ -4,8 +4,12 @@ import { TiDelete } from "react-icons/ti";
 //STYLE
 import "../css/comment-drop.css";
 export default class DropDown extends PureComponent {
+  deleteComment = (commentId) => {
+    this.props.deletehandler(commentId);
+  };
+
   render() {
-    let { dropdownList, thisComment } = this.props;
+    let { dropdownList, thisComment, deletehandler } = this.props;
     return (
       <div
         className="drop-comment-container"
@@ -27,7 +31,7 @@ export default class DropDown extends PureComponent {
             (this.props.onChangeElement, console.log(this.props.thisComment))
           }
         >
-          <div>
+          <div onClick={() => this.deleteComment(thisComment)}>
             <TiDelete className="align-self-center" />
             <span className="pl-1 bottom-1 ">Delete</span>
           </div>
