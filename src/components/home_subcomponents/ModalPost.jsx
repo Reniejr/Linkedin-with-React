@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import "../css/ModalPost.scss";
-import { Modal, Button, Row, Col } from "react-bootstrap";
+import { Modal, Row, Col } from "react-bootstrap";
 import ModalFooterData from "./PostModalDataExample/ModalFooterData.json";
 import PostImage from "./PostImage";
 export default class ModalPost extends PureComponent {
@@ -9,14 +9,19 @@ export default class ModalPost extends PureComponent {
   };
 
   fetchGet = async () => {
-    let response = await fetch(process.env.REACT_APP_BASE_URL + `/profile/me`, {
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-      },
-    });
-    let result = await response.json();
-    this.setState({ user: result });
-    console.log(this.state.user);
+    try {
+      let response = await fetch(
+        process.env.REACT_APP_BASE_URL + `/profile/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+          },
+        }
+      );
+      let result = await response.json();
+      this.setState({ user: result });
+      console.log(this.state.user);
+    } catch (error) {}
   };
 
   componentDidMount() {

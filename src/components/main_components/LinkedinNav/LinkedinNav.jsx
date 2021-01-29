@@ -26,7 +26,7 @@ export default class LinkedinNav extends PureComponent {
 
   render() {
     return (
-      <nav nav id="linkedin-nav">
+      <nav nav="true" id="linkedin-nav">
         <Container>
           <img src={logo} alt="" />
           <div className="toggle-nav" onClick={() => this.collapseMenu()}>

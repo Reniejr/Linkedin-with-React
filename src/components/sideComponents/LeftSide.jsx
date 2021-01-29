@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Card, Row, Col, Spinner } from "react-bootstrap";
 import "../../App.css";
 
@@ -63,7 +63,7 @@ class LeftSide extends React.Component {
             )}
 
             <hr />
-            <Card.Text>
+            <Card.Text as="div">
               <Row>
                 <Col style={{ textAlign: "left" }}>
                   <div>
@@ -84,6 +84,7 @@ class LeftSide extends React.Component {
                   <div className="mt-2">
                     <div>
                       <a
+                        href="google.com"
                         style={{
                           color: "gray",
                           fontSize: "13px",
@@ -93,9 +94,9 @@ class LeftSide extends React.Component {
                       </a>
                     </div>
                     <div>
-                      <a style={{ fontSize: "13px" }}>
+                      <a href="google.com" style={{ fontSize: "13px" }}>
                         <i
-                          class="fas fa-square"
+                          className="fas fa-square"
                           style={{ color: "rgb(186, 189, 11)" }}
                         ></i>
                         Reactivate Premium
@@ -103,9 +104,9 @@ class LeftSide extends React.Component {
                     </div>
                   </div>
                   <div className="mt-2">
-                    <p style={{ fontSize: "13px" }}>
-                      <i class="fas fa-bookmark"></i>My items
-                    </p>
+                    <a href="google.com" style={{ fontSize: "13px" }}>
+                      <i className="fas fa-bookmark"></i>My items
+                    </a>
                   </div>
                 </Col>
               </Row>
@@ -121,7 +122,7 @@ class LeftSide extends React.Component {
           }}
         >
           <Card.Body>
-            <Card.Text>
+            <Card.Text as="div">
               <Row>
                 <Col style={{ textAlign: "left" }}>
                   <div>
