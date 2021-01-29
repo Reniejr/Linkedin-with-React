@@ -123,15 +123,18 @@ class Profile extends React.Component {
           username: user.name,
           surname: "surname here",
         };
-        let response = fetch(`${process.env.REACT_APP_BASE_URL}/profiles`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(profile),
-        });
+        let response = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/profiles`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profile),
+          }
+        );
         if (response.ok) {
-          alert("successfuly added");
-          let result = await response.json();
-          alert(result);
+          alert("Basic profile created");
+          await response.json();
+          this.setState({ user: profile });
         } else {
           alert("Unable to post something went wrong");
           let error = await response.json();
