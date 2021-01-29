@@ -123,6 +123,7 @@ class MsgPage extends PureComponent {
   };
 
   typeText = (e) => {
+    //comment
     if (e.keyCode === 13) {
       const channel = this.state.pusherConfig.filter(
         (channel) => channel.name === this.state.index.toString()
