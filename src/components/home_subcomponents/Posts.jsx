@@ -49,7 +49,7 @@ class Posts extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    prevProps.postSize !== this.props.postSize && this.getPosts();
+    prevProps.postSize !== this.props.postSize && this.props.getPosts();
     if (prevState.postWithReacts.length !== this.state.postWithReacts.length) {
       if (this.state.postWithReacts > 0) {
         if (
@@ -57,10 +57,13 @@ class Posts extends Component {
           prevState.postWithReacts[0].hasOwnProperty("reactions")
         ) {
           this.setState({ postWithReacts: this.props.posts });
-          console.log("WORK PLEASE");
         }
       }
 
+      this.setState({ postWithReacts: this.props.posts });
+    }
+    if (this.props.posts.length !== prevProps.posts.length) {
+      console.log("SET THIS PLEASE");
       this.setState({ postWithReacts: this.props.posts });
     }
   }
