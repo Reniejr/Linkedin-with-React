@@ -1,5 +1,6 @@
 import React from "react";
 import "../../App.css";
+import "./STYLE/Home.scss";
 
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 
@@ -9,6 +10,7 @@ import LeftSide from "../sideComponents/LeftSide";
 import RightSide from "../sideComponents/RightSide";
 import { withAuth0 } from "@auth0/auth0-react";
 import EditPost from "../home_subcomponents/EditPost";
+import { getReactionsByPostId } from "../../apis/reaction/api";
 
 class Home extends React.Component {
   // fetch posts here
@@ -18,7 +20,7 @@ class Home extends React.Component {
     post: { text: "" },
     showPost: true,
     postSize: 0,
-
+    postsWithReact: [],
     formData: null,
     addImageModalShow: false,
     userId: null,
@@ -33,6 +35,9 @@ class Home extends React.Component {
       if (response.ok) {
         const posts = await response.json();
         // console.log("posts", posts);
+        posts.forEach((post) => {
+          this.getReactions(post._id);
+        });
         this.setState({
           postList: posts.reverse().slice(0, 50),
           isLoading: false,
@@ -76,6 +81,26 @@ class Home extends React.Component {
     }
   };
 
+  componentDidUpdate = async (prevProps, prevState) => {
+    if (prevState.postList.length > 0) {
+      if (
+        prevState.postList[0].hasOwnProperty("reactions") !==
+        this.state.postList[0].hasOwnProperty("reactions")
+      ) {
+        console.log("test");
+        this.setState({ postList: this.state.postList });
+      }
+    }
+    if (prevState.postList.length !== this.state.postList.length) {
+      await this.getPosts();
+    }
+    if (this.state.postSize !== prevState.postSize) {
+      console.log("STATE CHANGED");
+      await this.getPosts();
+      this.setState({ postList: this.state.postList });
+    }
+  };
+
   fetchPost = async () => {
     // const { user } = this.props.auth0;
     // console.log(this.props.auth0);
@@ -92,9 +117,11 @@ class Home extends React.Component {
           }),
         }
       );
-      let result = await response.json();
+      if (response.ok) {
+        let result = await response.json();
 
-      let imageUpload = await this.uploadImage(result._id);
+        let imageUpload = await this.uploadImage(result._id);
+      }
     }
   };
 
@@ -103,7 +130,8 @@ class Home extends React.Component {
 
     setTimeout(() => {
       this.showModal();
-      this.setState({ postSize: this.state.postSize + 1, isLoading: true });
+      const temp = this.state.postSize + 1;
+      this.setState({ postSize: temp, isLoading: true });
     }, 100);
     setTimeout(async () => {
       await this.getPosts();
@@ -131,9 +159,25 @@ class Home extends React.Component {
       let currentId = user.sub.slice(6);
       this.setState({ userId: currentId });
     }
-
+    if (this.state.postList.length > 0) {
+      if (this.state.postList[0].hasOwnProperty("reactions")) {
+        console.log(this.state.postList[0].hasOwnProperty("reactions"));
+      }
+    }
     this.getPosts();
   }
+
+  getReactions = async (postId) => {
+    let reactions = await getReactionsByPostId(postId);
+    let post = this.state.postList.find((post) => post._id === postId);
+    let postIndex = this.state.postList.findIndex(
+      (post) => post._id === postId
+    );
+
+    let newPost = { ...post, reactions };
+    this.state.postList[postIndex] = newPost;
+    this.setState({ postWithReacts: this.state.postList });
+  };
 
   render() {
     let showModal = this.state.showModal ? "-200vh" : "";
@@ -143,7 +187,7 @@ class Home extends React.Component {
       <div id="home-page">
         <Container>
           <Row>
-            <Col xs={3}>
+            <div className="left-side">
               {this.state.userId ? (
                 <LeftSide userId={this.state.userId} />
               ) : (
@@ -151,8 +195,8 @@ class Home extends React.Component {
                   <span className="sr-only">Loading...</span>
                 </Spinner>
               )}
-            </Col>
-            <Col xs={6}>
+            </div>
+            <div className="main-feed">
               <MakePost
                 addImageModalShow={this.state.addImageModalShow}
                 onHide={() => this.setState({ addImageModalShow: false })}
@@ -168,18 +212,21 @@ class Home extends React.Component {
                 clickable={canClick}
                 onClick={this.showModal}
               />
-              <Posts
-                showDelete={this.state}
-                postSize={this.state.postSize}
-                posts={this.state.postList}
-                isLoading={this.state.isLoading}
-                getPosts={this.getPosts}
-              />
+              {this.state.postList.length > 0 && (
+                <Posts
+                  showDelete={this.state}
+                  postSize={this.state.postSize}
+                  posts={this.state.postList}
+                  isLoading={this.state.isLoading}
+                  getPosts={this.getPosts}
+                />
+              )}
+
               {/* <EditPost /> */}
-            </Col>
-            <Col xs={3}>
+            </div>
+            <div className="right-side">
               <RightSide />
-            </Col>
+            </div>
           </Row>
         </Container>
       </div>

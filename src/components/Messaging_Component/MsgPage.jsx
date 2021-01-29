@@ -8,6 +8,7 @@ import Pusher from "pusher-js";
 import { getUser, getAllProfiles, updateChannel } from "./Utils/index";
 import axios from "axios";
 import { withAuth0 } from "@auth0/auth0-react";
+import MainMsg from "./MainMsg";
 
 class MsgPage extends PureComponent {
   state = {
@@ -25,23 +26,29 @@ class MsgPage extends PureComponent {
     modify: null,
     listUsers: [],
     randomColor: [],
-    selectedUser: null,
+    selectedUser: {},
+    notifications: [],
+    channel: null,
+    allChannels: [],
   };
 
-  pusherSetup = (allUsers) => {
+  pusherSetup = (chatId) => {
     const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
       cluster: process.env.REACT_APP_PUSHER_CLUSTER,
       encrypted: true,
     });
-    let channels = [];
-    let currentIndex = allUsers.findIndex(
-      (user) => user.username === this.state.username
-    );
-    allUsers.map((user, index) => {
-      const channel = pusher.subscribe(`${index + currentIndex}`);
-      channels.push(channel);
-    });
-    return channels;
+    // let channels = [];
+    // let currentIndex = allUsers.findIndex(
+    //   (user) => user.username === this.state.username
+    // );
+    // allUsers.map((user, index) => {
+    //   const channel = pusher.subscribe(`${index + currentIndex}`);
+    //   channels.push(channel);
+    // });
+    // // let channel = pusher.subscribe(`${chatId}`);
+    // return channels;
+    // // return channel;
+    return pusher;
   };
 
   setUser = async () => {
@@ -53,15 +60,21 @@ class MsgPage extends PureComponent {
   };
 
   setAllUsers = async () => {
-    const allUsers = await getAllProfiles(this.state.username);
+    const allUsersList = await getAllProfiles(this.state.username);
+    const allUsers = this.props.selectedUsers;
     this.setState({ allUsers });
 
-    let allChats = [];
+    // console.log(allUsers);
 
-    let currentIndex = allUsers.findIndex(
+    let allChats = [];
+    let notifications = [];
+
+    let currentIndex = allUsersList.findIndex(
       (user) => user.username === this.state.username
     );
-
+    // console.log(currentIndex);
+    //---------------------------------------------------------------
+    //RANDOM COLORS
     let listUsers = allUsers.filter(
       (user) => user.username !== this.state.username
     );
@@ -72,88 +85,138 @@ class MsgPage extends PureComponent {
       )}`;
       this.setState({ randomColor: [...this.state.randomColor, randomColor] });
     });
-
-    console.log(listUsers);
+    //--------------------------------------------------------------
+    // console.log(listUsers);
 
     this.setState({ listUsers: listUsers });
 
-    allUsers.map((user, index) => {
+    allUsersList.map((user, index) => {
       let chatBox = {
         chatId: index + currentIndex,
         user: user.username,
         chat: [],
       };
+      let notification = {
+        id: index + currentIndex,
+        txt: 0,
+      };
+      notifications.push(notification);
       allChats.push(chatBox);
     });
+    // console.log(allChats);
 
-    this.setState({ chats: allChats });
+    allChats.map((chatBox, index) => {
+      const pusher = new Pusher(process.env.REACT_APP_PUSHER_KEY, {
+        cluster: process.env.REACT_APP_PUSHER_CLUSTER,
+        encrypted: true,
+      });
+      let channel = pusher.subscribe(`${chatBox.chatId}`);
+      let allChannels = [...this.state.allChannels, channel];
+      // console.log(allChannels);
+      this.setState({ allChannels: allChannels });
+      channel.bind(`${chatBox.chatId}`, async (data) => {
+        let array = await updateChannel(
+          this.state.chats,
+          this.state.currentChat.chatId,
+          data
+        );
+        console.log(array);
+        this.setState({ chats: array });
+      });
+    });
+
+    this.setState({ chats: allChats, notifications: notifications });
   };
 
   setChat = (e) => {
     let chatSelected = e.currentTarget.value;
     this.setState({ chatSelected });
 
-    let currentIndex = this.state.allUsers.findIndex(
-      (user) => user.username === this.state.username
-    );
-
-    let index = this.state.chats.findIndex(
-      (user) => user.user === chatSelected
-    );
-    index = currentIndex + index;
-    this.setState({ index: index });
+    // console.log(chatSelected);
 
     let currentChat = this.state.chats.filter(
-      (chat) => chat.chatId === index
+      (chat) => chat.user === chatSelected
     )[0];
-    console.log(currentChat);
+    let content = this.state.chats.filter(
+      (chat) => chat.chatId === currentChat.chatId
+    )[0].chat;
+    console.log(content);
     this.setState({ currentChat: currentChat });
+    console.log(currentChat);
+
+    // // let channel = this.pusherSetup(currentChat.chatId);
+    // let pusher = this.pusherSetup();
+    // let channel = pusher.subscribe(`${currentChat.chatId}`);
+    // // const allChannels = [...this.state.allChannels];
+    // // channel = allChannels.filter(
+    // //   (channel) => channel.name === currentChat.chatId.toString()
+    // // )[0];
+    // // console.log(allChannels, channel);
+    // channel.bind(`${currentChat.chatId}`, async (data) => {
+    //   let array = await updateChannel(
+    //     this.state.chats,
+    //     this.state.currentChat.chatId,
+    //     data
+    //   );
+    //   console.log(array);
+    //   this.setState({ chats: array });
+    // });
 
     let selectedUser = this.state.allUsers.filter(
       (user) => user.username === chatSelected
     )[0];
     this.setState({ selectedUser: selectedUser });
+
+    //NOTIFICATIONS--------------------------------
+    let updateNot = [];
+    this.state.notifications.map((chat, index) => {
+      // console.log("id", chat.id, "txts", chat.txt);
+      // console.log(this.state.currentChat);
+      let updatedChat = { ...chat };
+      if (chat.id === this.state.currentChat.chatId) {
+        updatedChat.txt = 0;
+      }
+      updateNot.push(updatedChat);
+    });
+    this.setState({ notifications: updateNot });
   };
 
   componentDidMount = async () => {
     await this.setUser();
-    await this.setAllUsers();
-    const pusher = await this.pusherSetup(this.state.allUsers);
-    this.setState({ pusherConfig: pusher });
+    const allUsers = await this.setAllUsers();
   };
 
   typeText = (e) => {
     if (e.keyCode === 13) {
-      const channel = this.state.pusherConfig.filter(
-        (channel) => channel.name === this.state.index.toString()
-      )[0];
-      channel.bind("message", (data) => {
-        this.setState({
-          currentChat: {
-            ...this.state.currentChat,
-            chat: [...this.state.currentChat.chat, ...data],
-          },
-        });
-      });
-      this.typeText = this.typeText.bind(this);
       const payload = {
-        message: {
-          username: this.state.username,
-          message: this.state.text,
-        },
-        chat: `${this.state.index}`,
+        username: this.state.username,
+        message: this.state.text,
       };
-      let array = updateChannel(
-        this.state.chats,
-        this.state.index,
-        payload.message
-      );
-      axios.post(`${process.env.REACT_APP_BASE_URL}/chat`, array);
-      e.currentTarget.value = " ";
+      const chat = `${this.state.currentChat.chatId}`;
+
+      axios.post(`${process.env.REACT_APP_BASE_URL}/chat/${chat}`, payload);
+
       let temp = this.state.modify + 1;
       this.setState({
         modify: temp,
       });
+      this.setState({ text: "" });
+
+      //NOTIFICATIONS---------------------------------------
+      let updateNot = [];
+
+      this.state.notifications.map((chat, index) => {
+        // console.log("id", chat.id, "txts", chat.txt);
+        // console.log(this.state.currentChat);
+        let updatedChat = { ...chat };
+        if (chat.id === this.state.currentChat.chatId) {
+          updatedChat.txt = updatedChat.txt + 1;
+        }
+        updateNot.push(updatedChat);
+      });
+      this.setState({ notifications: updateNot });
+      // console.log(updateNot);
+      //-----------------------------------------------------
     } else {
       let text = e.currentTarget.value;
       this.setState({ text: text });
@@ -163,6 +226,16 @@ class MsgPage extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.modify !== this.state.modify) {
       // console.log("sent");
+    }
+    if (prevState.currentChat !== this.state.currentChat) {
+      let currentChat = this.state.currentChat;
+      let prevChat = prevState.currentChat;
+      let prevChannel = this.pusherSetup(prevChat.chatId);
+      prevChannel.unbind();
+      console.log("changed");
+      // let pusher = this.pusherSetup();
+      // let channel = pusher.unsubscribe(`${prevChat.chatId}`);
+      // console.log("unsubscribe");
     }
   }
 
@@ -174,6 +247,9 @@ class MsgPage extends PureComponent {
             allUsers={this.state.listUsers}
             setChat={this.setChat}
             randomColor={this.state.randomColor}
+            notifications={this.state.notifications}
+            currentChat={this.state.currentChat}
+            totalNot={this.props.totalNot}
           />
           <div id="main-msg">
             <header>New Message</header>
@@ -232,6 +308,7 @@ class MsgPage extends PureComponent {
                 <></>
               )}
             </div>
+
             <div className="msg-sender">
               <input
                 type="text"

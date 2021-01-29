@@ -77,6 +77,33 @@
                                 color: #0177b4;
                                 background-color:transparent;
                             }
+                            a{
+                                width: 100%;
+                                height: 100%;   
+                                position: relative;
+                                span{
+                                    position: relative;
+                                    margin-left: 5px;
+                                }
+                                #total-not{
+                                    @include borderRadius(50%);
+                                    position: absolute;
+                                    top: 5px;
+                                    right: 0;
+                                    width: 20px;
+                                    height: 20px;
+                                    background-color:red;
+                                    p{
+                                        margin: 0;
+                                        font-weight: 700;
+                                    }
+                                }
+                                .link-content{
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                            }
                         }
                         li:nth-last-of-type(1){
                             border-top: 1px solid rgba($color: #000000, $alpha: 0.1);
@@ -88,13 +115,52 @@
     }
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 1024px){
     #linkedin-nav{
         .container{
             img{display:none;}
             .toggle-nav{display:inline-flex;}
             .searchBar{display:none;}
-            .menu{display:none;}
+            .menu{
+                display: none;
+                flex-direction: column;
+                background-color:#f8f9fa;
+                position: absolute;
+                top: 50px;
+                width: 200px;
+                height: 400px;
+                text-align: left;
+                li, .menu-item{
+                    .menu-item{
+                        width: 100%;
+                        display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                        i{
+                            max-width: 19%;
+                            margin-right: 5px;
+                        }
+                        span{
+                            max-width: 80%;
+                        }
+                    }
+                    font-size: 1.25rem;
+                    margin: .2rem 0;
+                    display: flex;
+                    flex-direction: row;
+                }
+                a{
+                    width: 100%;
+                    display: flex;
+                    flex-direction:row;
+                    i{
+                        max-width: 19%;
+                    }
+                    span{
+                        max-width: 80%;
+                    }
+                }
+            }
         }
     }
 }

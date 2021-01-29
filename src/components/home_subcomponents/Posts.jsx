@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import "../css/Post.css";
 import PostContent from "./PostContent";
 import { Spinner } from "react-bootstrap";
+import { getReactionsByPostId } from "../../apis/reaction/api";
 class Posts extends Component {
-  state = { posts: [], isLoading: true };
+  state = { posts: [], isLoading: true, reacts: [], postWithReacts: [] };
 
   getPosts = async () => {
     try {
@@ -11,7 +12,10 @@ class Posts extends Component {
 
       if (response.ok) {
         const posts = await response.json();
-        console.log("posts", posts.user);
+        console.log("posts", posts);
+        posts.forEach((post) => {
+          this.getReactions(post._id);
+        });
         this.setState({
           posts: posts.reverse().slice(0, 50),
           isLoading: false,
@@ -23,12 +27,45 @@ class Posts extends Component {
     }
   };
 
-  //   componentDidMount() {
-  //     this.getPosts();
-  //   }
+  getReactions = async (postId) => {
+    let reactions = await getReactionsByPostId(postId);
+    let reacts = this.state.reacts;
+    reacts.push(reactions);
+    let post = this.state.posts.find((post) => post._id === postId);
+    let postWithReacts = this.state.postWithReacts;
+    let newPost = { ...post, reactions: reactions };
+    postWithReacts.push(newPost);
+    this.setState({ reacts });
+  };
 
-  componentDidUpdate(prevProps) {
-    prevProps.postSize !== this.props.postSize && this.getPosts();
+  componentDidMount() {
+    if (this.props.posts.length > 0) {
+      if (this.props.posts[0].hasOwnProperty("reactions")) {
+        this.setState({ postWithReacts: this.props.posts });
+        console.log("WORK PLEASE");
+      }
+    }
+    this.setState({ postWithReacts: this.props.posts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    prevProps.postSize !== this.props.postSize && this.props.getPosts();
+    if (prevState.postWithReacts.length !== this.state.postWithReacts.length) {
+      if (this.state.postWithReacts > 0) {
+        if (
+          this.state.postWithReacts[0].hasOwnProperty("reactions") !==
+          prevState.postWithReacts[0].hasOwnProperty("reactions")
+        ) {
+          this.setState({ postWithReacts: this.props.posts });
+        }
+      }
+
+      this.setState({ postWithReacts: this.props.posts });
+    }
+    if (this.props.posts.length !== prevProps.posts.length) {
+      console.log("SET THIS PLEASE");
+      this.setState({ postWithReacts: this.props.posts });
+    }
   }
 
   // componentDidUpdate(prevProps, prevState){
@@ -49,16 +86,20 @@ class Posts extends Component {
             variant="primary"
           />
         )}
-        {posts.map((post) => {
-          return (
-            <PostContent
-              id={post._id}
-              key={post._id}
-              post={post}
-              getPosts={getPosts}
-            />
-          );
-        })}
+        {this.state.postWithReacts.length > 0 && (
+          <>
+            {this.state.postWithReacts.map((post) => {
+              return (
+                <PostContent
+                  id={post._id}
+                  key={post._id}
+                  post={post}
+                  getPosts={getPosts}
+                />
+              );
+            })}
+          </>
+        )}
       </div>
     );
   }
