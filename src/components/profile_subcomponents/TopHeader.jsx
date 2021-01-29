@@ -13,7 +13,7 @@ class TopHeader extends React.Component {
 
   downloadExp = () => {
     window.location.assign(
-      `${process.env.REACT_APP_BASE_URL1}/experiences/${this.props.currentId}/experiences/csv`
+      `${process.env.REACT_APP_BASE_URL}/experiences/${this.props.currentId}/experiences/csv`
     );
   };
 
