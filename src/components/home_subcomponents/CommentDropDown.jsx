@@ -5,10 +5,14 @@ import { TiDelete } from "react-icons/ti";
 import "../css/comment-drop.css";
 export default class DropDown extends PureComponent {
   render() {
+    let { dropdownList, thisComment } = this.props;
     return (
       <div
         className="drop-comment-container"
-        style={{ display: !this.props.show ? "flex" : "none" }}
+        // style={{ display: this.props.show ? "block" : "none" }}
+        style={{
+          display: dropdownList.includes(thisComment) ? "block" : "none",
+        }}
       >
         <div className="comment-button">
           <div>

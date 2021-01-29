@@ -16,18 +16,23 @@ class CommentList extends React.Component {
     ourComments: [],
     dropdown: false,
     isLoading: true,
-
+    dropdownList: [],
     deletedSize: 0,
     errorMessage: false,
   };
 
-  showDropdown = idComment => {
-    if (idComment === this.state.ourComments[0]) {
-      //this set the dropdown truw or false
-      this.setState({ dropdown: !this.state.dropdown });
-    } else {
-      this.setState({ dropdown: this.state.dropdown });
-    }
+  showDropdown = () => {
+    this.setState({ dropdown: !this.state.dropdown });
+  };
+  showOneDropdown = commentId => {
+    // if (this.state.dropdownList.includes(commentId)) {
+    //   let dropdownList = [...this.state.dropdownList];
+    //   dropdownList = dropdownList.filter(comment => comment !== commentId);
+    //   this.setState({ dropdownList: dropdownList });
+    // } else {
+    //   this.setState({ dropdownList: [commentId] });
+    // }
+    this.setState({ dropdownList: [commentId] });
   };
 
   //!BAD API THIS IS EVIL!!!!!!!!!!::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -160,9 +165,10 @@ class CommentList extends React.Component {
                       </Col>
 
                       <Col className={this}>
-                        <div onClick={() => this.showDropdown(idComment)}>
+                        <div onClick={() => this.showDropdown()}>
                           <HiOutlineDotsHorizontal
                             style={{ cursor: "pointer" }}
+                            onClick={() => this.showOneDropdown(comment._id)}
                           />
                         </div>
                       </Col>
@@ -181,10 +187,11 @@ class CommentList extends React.Component {
                         width: "100px",
                       }}
                       className=" drop-comment-container d-flex align-items-end p-0  rounded-lg "
-                      show={e => this.showDropdown(e)} //mettere anche index
+                      show={this.showDropdown} //mettere anche index
                       drop={this.state.dropdown}
                       thisComment={comment._id}
                       deletehandler={this.props.deletehandler}
+                      dropdownList={this.state.dropdownList}
                     />
                   }
                 </ListGroup>
