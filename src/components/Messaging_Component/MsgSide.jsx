@@ -63,7 +63,7 @@ export default class MsgSide extends PureComponent {
         (acc, notification) => acc + notification.txt,
         0
       );
-      console.log(total);
+      // console.log(total);
       this.setState({ notifications: notifications, total: total });
       this.props.totalNot(total);
     }

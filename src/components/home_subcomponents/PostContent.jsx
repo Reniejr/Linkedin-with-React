@@ -68,7 +68,7 @@ class PostContent extends Component {
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   //*TO UPDATE THE COMMENT FIELD
   //* Go to the submitOurComment function()
-  updateCommentField = e => {
+  updateCommentField = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
 
@@ -138,7 +138,6 @@ class PostContent extends Component {
     // this.getPostImage();
   }
   render() {
-
     const { post, getPosts } = this.props;
 
     return (

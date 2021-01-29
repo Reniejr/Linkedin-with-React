@@ -40,7 +40,7 @@ class App extends React.Component {
 
   totalNot = (notifications) => {
     let total = notifications
-    console.log(total)
+    // console.log(total)
     this.setState({ notifications: total })
     let counter = this.state.counter + 1
     this.setState({counter: counter})
