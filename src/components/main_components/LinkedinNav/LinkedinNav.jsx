@@ -13,15 +13,10 @@ import "./LinkedinNav.scss";
 export default class LinkedinNav extends PureComponent {
   state = {
     dropdown: false,
-    collapseMenu: false,
   };
 
   showDropdown = () => {
     this.setState({ dropdown: !this.state.dropdown });
-  };
-
-  collapseMenu = () => {
-    this.setState({ collapseMenu: !this.state.collapseMenu });
   };
 
   render() {
@@ -29,7 +24,7 @@ export default class LinkedinNav extends PureComponent {
       <nav nav id="linkedin-nav">
         <Container>
           <img src={logo} alt="" />
-          <div className="toggle-nav" onClick={() => this.collapseMenu()}>
+          <div className="toggle-nav">
             <i className="fas nav-icons fa-bars "></i>
           </div>
           <div className="searchBar">
@@ -41,154 +36,35 @@ export default class LinkedinNav extends PureComponent {
               onChange={this.props.handleSearch}
             />
           </div>
-          <ul
-            className="menu"
-            // style={
-            //   this.state.collapseMenu
-            //     ? { display: "block" }
-            //     : { display: "none" }
-            // }
-          >
+          <ul className="menu">
             <li>
               <Link to="/">
-                <div
-                  className="link-content"
-                  style={
-                    this.state.collapseMenu
-                      ? {
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }
-                      : {
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <i className="fas nav-icons fa-home "></i>
-                  <span>Home</span>
-                </div>
+                <i className="fas nav-icons fa-home "></i>
+                <span>Home</span>
               </Link>
             </li>
             <li>
               <Link to="/mynetwork">
-                <div
-                  className="link-content"
-                  style={
-                    this.state.collapseMenu
-                      ? {
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }
-                      : {
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <i className="fas nav-icons fa-network-wired "></i>
-                  <span>My Network</span>
-                </div>
+                <i className="fas nav-icons fa-network-wired "></i>
+                <span>My Network</span>
               </Link>
             </li>
             <li>
               <Link to="/jobs">
-                <div
-                  className="link-content"
-                  style={
-                    this.state.collapseMenu
-                      ? {
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }
-                      : {
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <i className="fas nav-icons fa-briefcase "></i>
-                  <span>Jobs</span>
-                </div>
+                <i className="fas nav-icons fa-briefcase "></i>
+                <span>Jobs</span>
               </Link>
             </li>
             <li>
               <Link to={`/message/me`}>
-                <div
-                  className="link-content"
-                  style={
-                    this.state.collapseMenu
-                      ? {
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }
-                      : {
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <i className="nav-icons far fa-comment-dots"></i>
-                  <span>Messaging</span>
-                </div>
+                <i className="nav-icons far fa-comment-dots"></i>
+                <span>Messaging</span>
               </Link>
             </li>
             <li>
               <Link to="/">
-                <div
-                  className="link-content"
-                  style={
-                    this.state.collapseMenu
-                      ? {
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }
-                      : {
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }
-                  }
-                >
-                  <i className="fas nav-icons fa-bell"></i>
-                  {this.props.notifications === 0 ? (
-                    ""
-                  ) : (
-                    <div
-                      id="total-not"
-                      style={{
-                        position: "absolute",
-                        borderRadius: "50%",
-                        top: "-5px",
-                        right: "1.50rem",
-                        width: "20px",
-                        height: "20px",
-                        backgroundColor: "red",
-                      }}
-                    >
-                      <p
-                        style={{
-                          margin: "0",
-                          marginTop: "-2px",
-                          fontWeight: "800",
-                          color: "white",
-                        }}
-                      >
-                        {this.props.notifications}
-                      </p>
-                    </div>
-                  )}
-                  <span style={{ position: "relative" }}>Notifications </span>
-                </div>
+                <i className="fas nav-icons fa-bell"></i>
+                <span>Notifications</span>
               </Link>
             </li>
             <li>

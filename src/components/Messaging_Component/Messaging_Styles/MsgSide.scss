@@ -49,7 +49,6 @@
           padding: .5rem .5rem;
           border: 2px solid;
           display:flex;
-          position: relative;
           img{
             width: 50px;
             height: 50px;
@@ -66,23 +65,6 @@
             color: #0176b5;
             font-size: .8rem;
             // -webkit-text-stroke: 1px rgba($color: #000000, $alpha: 0.5);
-          }
-          .badge-not{
-            width: 20px;
-            height: 20px;
-            @include borderRadius(50%);
-            text-align: center;
-            background-color:red;
-            color: white;
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            margin: 0;
-            p{
-              margin: 0;
-              margin-top: -2px;
-              font-weight:700;
-            }
           }
         }
       }

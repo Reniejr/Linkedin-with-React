@@ -2,86 +2,75 @@ import React, { PureComponent } from "react";
 import "./Messaging_Styles/MainMsg.scss";
 
 export default class MainMsg extends PureComponent {
-  state = {
-    chat: {
-      chat: [],
-      chatId: null,
-      user: null,
-    },
-  };
-
-  componentDidMount() {
-    let chat = this.props.chat;
-    this.setState({ chat: chat });
-    chat.lenght > 0 ? console.log(chat.chat[0].username) : console.log("empty");
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.chat.chat !== this.props.chat.chat) {
-      console.log("update");
-    }
-    if (prevState.chat.chat !== this.state.chat.chat) {
-      console.log("update");
-    }
-  }
-
   render() {
-    const { chat, selectedUser, image, currentChat } = this.props;
-    // console.log(this.props.chat.chat);
-    return selectedUser === null ? (
-      <div
-        className="msg-dialog"
-        style={{
-          display: currentChat !== chat.user ? "none" : "block",
-        }}
-      ></div>
-    ) : (
-      <div
-        className="msg-dialog"
-        style={{
-          display: currentChat !== chat.user ? "none" : "block",
-        }}
-      >
-        {this.state.chat.chat.lenght > 0 ? (
-          this.state.chat.chat.map((msg) => {
-            console.log(msg);
-            return (
-              <div
-                className="text"
-                style={{
-                  alignItems:
-                    selectedUser.username === msg.username
-                      ? "flex-end"
-                      : "flex-start",
-                }}
-              >
-                <p
+    const { currentUser, currentChat } = this.props;
+    return (
+      <div id="main-msg">
+        <header>New Message</header>
+        <input
+          type="text"
+          placeholder="Type a name or multiple names..."
+          value={
+            currentChat ? currentChat.user : "Type a name or multiple names..."
+          }
+        />
+        <div className="msg-dialog">
+          {currentChat ? (
+            currentChat.chat.map((msg) => {
+              return (
+                <div
+                  className="text"
                   style={{
-                    color:
-                      selectedUser.username === msg.username ? "blue" : "green",
+                    alignItems:
+                      currentUser === msg.username ? "flex-end" : "flex-start",
                   }}
                 >
-                  {selectedUser.username !== msg.username ? (
-                    <img src={image} alt="" />
-                  ) : (
-                    <></>
-                  )}
-                  {msg.username}
-                </p>
-                <span
-                  style={{
-                    backgroundColor:
-                      selectedUser.username === msg.username ? "blue" : "lime",
-                  }}
-                >
-                  {msg.message}
-                </span>
-              </div>
-            );
-          })
-        ) : (
-          <></>
-        )}
+                  <p
+                    style={{
+                      color: currentUser === msg.username ? "blue" : "green",
+                    }}
+                  >
+                    {msg.username}
+                  </p>
+                  <span
+                    style={{
+                      backgroundColor:
+                        currentUser === msg.username ? "blue" : "lime",
+                    }}
+                  >
+                    {msg.message}
+                  </span>
+                </div>
+              );
+            })
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className="msg-sender">
+          <input
+            type="text"
+            placeholder="Write here your text..."
+            onChange={this.props.typeFunc}
+            onKeyDown={this.props.typeFunc}
+          />
+          <button>
+            <i className="fas fa-chevron-up"></i>
+          </button>
+        </div>
+        <div className="media-uploads">
+          <div className="media-icons">
+            <i className="fas fa-image"></i>
+            <i className="fas fa-paperclip"></i>
+            <span>GIF</span>
+            <i className="far fa-smile"></i>
+            <i className="fas fa-video"></i>
+          </div>
+          <div className="msg-options">
+            <button>Send</button>
+            <i className="fas fa-ellipsis-h"></i>
+          </div>
+        </div>
       </div>
     );
   }

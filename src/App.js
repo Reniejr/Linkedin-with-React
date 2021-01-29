@@ -5,8 +5,7 @@ import NavBar from "./components/NavBar";
 
 import Profile from "./components/main_components/Profile";
 
-import { Route } from "react-router-dom";
-import {BrowserRouter as Router} from "react-router-dom"
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import ShowSearchResult from "./components/main_components/ShowSearchResult";
 
@@ -25,26 +24,25 @@ class App extends React.Component {
     filteredUserList: [],
     showResult: false,
     searchString: "",
-    currentId: null,
-    notifications: 0,
-    counter:0
   };
 
-  setCurrentId=(id)=> {
-    this.setState({currentId: id})
-  }  
-
-  setUserList = (user) => {
-    this.setState({userList: [...this.state.userList, user]})
-  }
-
-  totalNot = (notifications) => {
-    let total = notifications
-    // console.log(total)
-    this.setState({ notifications: total })
-    let counter = this.state.counter + 1
-    this.setState({counter: counter})
-  }
+  getUserList = async () => {
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_BASE_URL + "/profiles/",
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+          },
+        }
+      );
+      const userList = await response.json();
+      console.log("All user list", userList);
+      this.setState({ userList });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   handleSearch = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
@@ -68,10 +66,8 @@ class App extends React.Component {
     }
   };
 
-
-
   componentDidMount() {
-    // this.getUserList();
+    this.getUserList();
   }
   render() {
     return (
@@ -86,7 +82,6 @@ class App extends React.Component {
           <LinkedinNav
             searchString={this.state.searchString}
             handleSearch={this.handleSearch}
-            notifications={this.state.notifications}
           />
 
           <ProtectedRoute path="/logout" component={NotRegistered} />
@@ -94,10 +89,10 @@ class App extends React.Component {
           <Route path="/profile/:id" component={Profile} />
           <Route
             path="/mynetwork"
-            render={(props) => <NetworkPage userList={this.state.userList} setCurrentId={this.setCurrentId} setUsers={ this.setUserList}/>}
+            render={(props) => <NetworkPage userList={this.state.userList} />}
           />
           <Route path="/jobs" component={JobsPage} />
-          <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={this.state.userList} totalNot={ this.totalNot}/>} />
+          <Route path="/message/:id" component={MsgPage} />
         </Router>
       </div>
     );

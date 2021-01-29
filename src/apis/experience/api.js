@@ -10,7 +10,7 @@ export async function fetchUserExperiences(userId) {
     );
 
     if (response.ok) {
-      const data = await response.json();
+      const data = response.json();
       return data;
     } else {
       return "Something Went Wrong";

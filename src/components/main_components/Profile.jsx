@@ -30,7 +30,6 @@ class Profile extends React.Component {
     isImgUploaded: false,
     message: "",
     isLoading: "",
-    currentId: "",
   };
 
   uploadImage = async (e) => {
@@ -157,9 +156,6 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    const { user } = this.props.auth0;
-    let currentId = user.sub.slice(6);
-    this.setState({ currentId: currentId });
     if (this.props.auth0.isLoading) {
       return <Loading />;
     } else {
@@ -207,7 +203,6 @@ class Profile extends React.Component {
               showChanges={this.handleShowChanges}
               isShowEditBtn={this.state.isShowEditButton}
               user={this.state.user}
-              currentId={this.state.currentId}
             />
             <AboutBlock isShowEditBtn={this.state.isShowEditButton} />
             <Dashboard />

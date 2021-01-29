@@ -12,7 +12,6 @@ class NetworkPage extends PureComponent {
     counter: 0,
     currentId: null,
     allUsers: [],
-    selectedUsers: [],
   };
 
   setAllUsers = async () => {
@@ -25,7 +24,6 @@ class NetworkPage extends PureComponent {
     this.setAllUsers();
     const { user } = this.props.auth0;
     let currentId = user.sub.slice(6);
-    this.props.setCurrentId(currentId);
     this.setState({ currentId });
   }
 
@@ -44,7 +42,6 @@ class NetworkPage extends PureComponent {
             <Invitations
               userList={this.state.allUsers}
               counterFunction={this.counterFunction}
-              setUsers={this.props.setUsers}
             />
             <Events />
           </Col>

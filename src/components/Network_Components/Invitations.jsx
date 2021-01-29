@@ -5,7 +5,6 @@ export default class Invitations extends PureComponent {
   state = {
     showInvitations: true,
     showCard: [],
-    selectedUser: [],
   };
 
   showInv() {
@@ -16,10 +15,9 @@ export default class Invitations extends PureComponent {
     this.setState({ showCard: [...this.state.showCard, index] });
   };
 
-  acceptInvitation(index, user) {
+  acceptInvitation(index) {
     this.props.counterFunction();
     this.setState({ showCard: [...this.state.showCard, index] });
-    this.props.setUsers(user);
   }
 
   render() {
@@ -64,7 +62,7 @@ export default class Invitations extends PureComponent {
                   <button onClick={(e) => this.showCardFunc(index)}>
                     Ignore
                   </button>
-                  <button onClick={() => this.acceptInvitation(index, user)}>
+                  <button onClick={() => this.acceptInvitation(index)}>
                     Accept
                   </button>
                 </div>
