@@ -8,6 +8,7 @@ import three from "../../assets/like-btns/3-support.png";
 import four from "../../assets/like-btns/4-love.png";
 import five from "../../assets/like-btns/5-insightful.png";
 import six from "../../assets/like-btns/6-logo.png";
+import "./STYLE/ActionButtons.scss";
 class ActionButtons extends React.Component {
   constructor(props) {
     super(props);
@@ -125,96 +126,91 @@ class ActionButtons extends React.Component {
       let counter = this.state.counter + 1;
       this.setState({ counter, newReacts: null });
     }
+    this.setState({ showLike: !this.state.showLike });
   };
 
   render() {
     return (
       <>
-        <div>
-          {this.state.newReacts ? (
-            <div>
-              <p>
-                MY REACT:{" "}
-                {this.state.userReaction === 1 ? (
-                  <img style={this.style.img} src={one} alt="" id="1" />
-                ) : this.state.userReaction === 2 ? (
-                  <img style={this.style.img} src={two} alt="" id="1" />
-                ) : this.state.userReaction === 3 ? (
-                  <img style={this.style.img} src={three} alt="" id="1" />
-                ) : this.state.userReaction === 4 ? (
-                  <img style={this.style.img} src={four} alt="" id="1" />
-                ) : this.state.userReaction === 5 ? (
-                  <img style={this.style.img} src={five} alt="" id="1" />
-                ) : this.state.userReaction === 6 ? (
-                  <img style={this.style.img} src={six} alt="" id="1" />
-                ) : (
-                  <p>none</p>
-                )}
-              </p>
-              {this.state.newReacts && (
-                <>
-                  {this.state.newReacts.reactCounts.map((react) => (
-                    <>
-                      <p>
-                        ReactId:{" "}
-                        {react._id === 1 ? (
-                          <img style={this.style.img} src={one} alt="" id="1" />
-                        ) : react._id === 2 ? (
-                          <img style={this.style.img} src={two} alt="" id="1" />
-                        ) : react._id === 3 ? (
-                          <img
-                            style={this.style.img}
-                            src={three}
-                            alt=""
-                            id="1"
-                          />
-                        ) : react._id === 4 ? (
-                          <img
-                            style={this.style.img}
-                            src={four}
-                            alt=""
-                            id="1"
-                          />
-                        ) : react._id === 5 ? (
-                          <img
-                            style={this.style.img}
-                            src={five}
-                            alt=""
-                            id="1"
-                          />
-                        ) : react._id === 6 ? (
-                          <img style={this.style.img} src={six} alt="" id="1" />
-                        ) : (
-                          <p>none</p>
-                        )}
-                        ,count: {react.count}
-                      </p>
-                    </>
-                  ))}
-                </>
-              )}
-            </div>
-          ) : (
-            <p>no reacts</p>
-          )}
-        </div>
         <div className="icon-container d-flex flex-row mb-2">
           <div
-            className="action-icons mr-3"
+            className="action-icons mr-3 like-button"
             onClick={() => this.setState({ showLike: !this.state.showLike })}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              data-supported-dps="24x24"
-              fill={this.state.userReaction > 0 && "blue"}
-              class="mercado-match"
-              width="24"
-              height="24"
-              focusable="false"
+            <div
+              className="reactions"
+              style={
+                this.state.newReacts
+                  ? { backgroundColor: "#f3f2ef" }
+                  : { backgroundColor: "transparent" }
+              }
             >
-              <path d="M19.46 11l-3.91-3.91a7 7 0 01-1.69-2.74l-.49-1.47A2.76 2.76 0 0010.76 1 2.75 2.75 0 008 3.74v1.12a9.19 9.19 0 00.46 2.85L8.89 9H4.12A2.12 2.12 0 002 11.12a2.16 2.16 0 00.92 1.76A2.11 2.11 0 002 14.62a2.14 2.14 0 001.28 2 2 2 0 00-.28 1 2.12 2.12 0 002 2.12v.14A2.12 2.12 0 007.12 22h7.49a8.08 8.08 0 003.58-.84l.31-.16H21V11zM19 19h-1l-.73.37a6.14 6.14 0 01-2.69.63H7.72a1 1 0 01-1-.72l-.25-.87-.85-.41A1 1 0 015 17l.17-1-.76-.74A1 1 0 014.27 14l.66-1.09-.73-1.1a.49.49 0 01.08-.7.48.48 0 01.34-.11h7.05l-1.31-3.92A7 7 0 0110 4.86V3.75a.77.77 0 01.75-.75.75.75 0 01.71.51L12 5a9 9 0 002.13 3.5l4.5 4.5H19z"></path>
-            </svg>
+              {this.state.newReacts ? (
+                <div className="reaction-list">
+                  {this.state.newReacts && (
+                    <>
+                      {this.state.newReacts.reactCounts.map((react) => (
+                        <>
+                          <div className="new-reactions">
+                            {" "}
+                            {react._id === 1 ? (
+                              <img src={one} alt="" id="1" />
+                            ) : react._id === 2 ? (
+                              <img src={two} alt="" id="1" />
+                            ) : react._id === 3 ? (
+                              <img src={three} alt="" id="1" />
+                            ) : react._id === 4 ? (
+                              <img src={four} alt="" id="1" />
+                            ) : react._id === 5 ? (
+                              <img src={five} alt="" id="1" />
+                            ) : react._id === 6 ? (
+                              <img src={six} alt="" id="1" />
+                            ) : (
+                              <p></p>
+                            )}
+                            <div className="count">{react.count}</div>
+                          </div>
+                        </>
+                      ))}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <p></p>
+              )}
+            </div>
+            {this.state.userReaction === 0 ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                data-supported-dps="24x24"
+                fill={this.state.userReaction > 0 && "blue"}
+                class="mercado-match"
+                width="24"
+                height="24"
+                focusable="false"
+              >
+                <path d="M19.46 11l-3.91-3.91a7 7 0 01-1.69-2.74l-.49-1.47A2.76 2.76 0 0010.76 1 2.75 2.75 0 008 3.74v1.12a9.19 9.19 0 00.46 2.85L8.89 9H4.12A2.12 2.12 0 002 11.12a2.16 2.16 0 00.92 1.76A2.11 2.11 0 002 14.62a2.14 2.14 0 001.28 2 2 2 0 00-.28 1 2.12 2.12 0 002 2.12v.14A2.12 2.12 0 007.12 22h7.49a8.08 8.08 0 003.58-.84l.31-.16H21V11zM19 19h-1l-.73.37a6.14 6.14 0 01-2.69.63H7.72a1 1 0 01-1-.72l-.25-.87-.85-.41A1 1 0 015 17l.17-1-.76-.74A1 1 0 014.27 14l.66-1.09-.73-1.1a.49.49 0 01.08-.7.48.48 0 01.34-.11h7.05l-1.31-3.92A7 7 0 0110 4.86V3.75a.77.77 0 01.75-.75.75.75 0 01.71.51L12 5a9 9 0 002.13 3.5l4.5 4.5H19z"></path>
+              </svg>
+            ) : (
+              <div className="my-react">
+                {this.state.userReaction === 1 ? (
+                  <img src={one} alt="" id="1" />
+                ) : this.state.userReaction === 2 ? (
+                  <img src={two} alt="" id="1" />
+                ) : this.state.userReaction === 3 ? (
+                  <img src={three} alt="" id="1" />
+                ) : this.state.userReaction === 4 ? (
+                  <img src={four} alt="" id="1" />
+                ) : this.state.userReaction === 5 ? (
+                  <img src={five} alt="" id="1" />
+                ) : this.state.userReaction === 6 ? (
+                  <img src={six} alt="" id="1" />
+                ) : (
+                  <p></p>
+                )}
+              </div>
+            )}
             <span className=" ml-1">Like</span>
           </div>
           <LikeActions
