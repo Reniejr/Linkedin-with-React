@@ -187,6 +187,7 @@ class MsgPage extends PureComponent {
   };
 
   typeText = (e) => {
+    //comment
     if (e.keyCode === 13) {
       const payload = {
         username: this.state.username,
