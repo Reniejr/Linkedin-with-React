@@ -29,7 +29,8 @@ export default class EditPost extends PureComponent {
   editConfirm = async () => {
     let id = this.props.postId;
     await editPost(id, this.state.post);
-    await this.props.getPosts();
+    // await this.props.getPosts();
+    this.props.increasePostSize();
     this.props.toggle();
   };
 
@@ -52,7 +53,7 @@ export default class EditPost extends PureComponent {
             id=""
             cols="30"
             rows="5"
-            placeholder={this.state.post ? this.state.post.text : ""}
+            value={this.state.post ? this.state.post.text : ""}
             onChange={this.postBody}
           ></textarea>
           <Form>

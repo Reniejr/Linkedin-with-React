@@ -49,7 +49,11 @@ class Posts extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    prevProps.postSize !== this.props.postSize && this.props.getPosts();
+    if (prevProps.postSize !== this.props.postSize) {
+      this.props.getPosts();
+      console.log("State changed");
+      this.setState({ postWithReacts: this.props.posts });
+    }
     if (prevState.postWithReacts.length !== this.state.postWithReacts.length) {
       if (this.state.postWithReacts > 0) {
         if (
@@ -62,9 +66,13 @@ class Posts extends Component {
 
       this.setState({ postWithReacts: this.props.posts });
     }
-    if (this.props.posts.length !== prevProps.posts.length) {
-      console.log("SET THIS PLEASE");
-      this.setState({ postWithReacts: this.props.posts });
+    if (
+      this.props.posts.length !== prevProps.posts.length ||
+      prevProps.postSize !== this.props.postSize
+    ) {
+      this.setState({ postWithReacts: this.props.posts }, () =>
+        console.log(this.props.posts)
+      );
     }
   }
 
@@ -91,6 +99,7 @@ class Posts extends Component {
             {this.state.postWithReacts.map((post) => {
               return (
                 <PostContent
+                  increasePostSize={this.props.increasePostSize}
                   id={post._id}
                   key={post._id}
                   post={post}

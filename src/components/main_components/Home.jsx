@@ -81,6 +81,11 @@ class Home extends React.Component {
     }
   };
 
+  increasePostSize = () => {
+    const temp = this.state.postSize + 1;
+    this.setState({ postSize: temp });
+  };
+
   componentDidUpdate = async (prevProps, prevState) => {
     if (prevState.postList.length > 0) {
       if (
@@ -214,6 +219,7 @@ class Home extends React.Component {
               />
               {this.state.postList.length > 0 && (
                 <Posts
+                  increasePostSize={this.increasePostSize}
                   showDelete={this.state}
                   postSize={this.state.postSize}
                   posts={this.state.postList}

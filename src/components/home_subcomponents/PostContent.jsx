@@ -141,6 +141,19 @@ class PostContent extends Component {
     this.getProfileInfo();
     // this.getPostImage();
   }
+
+  getSinglePost = async (postId) => {
+    try {
+      let response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/posts/${postId}`
+      );
+      if (response.ok) {
+        let post = await response.json();
+        return post;
+      }
+    } catch (error) {}
+  };
+
   render() {
     const { post, getPosts } = this.props;
 
@@ -163,6 +176,7 @@ class PostContent extends Component {
                 post={post}
                 userId={post.user._id}
                 getPosts={getPosts}
+                increasePostSize={this.props.increasePostSize}
               ></DropdownPost>
               <Row>
                 <Col md={12} className="mt-4">
@@ -193,26 +207,30 @@ class PostContent extends Component {
                   </div>
                 </Col>
                 <hr />
-                <Col md={12}>
-                  <p className="post-text float-left">{post.text}</p>
-                </Col>
-                <Col md={12}>
-                  {post.image && (
-                    <img
-                      className="post-img"
-                      onClick={() =>
-                        this.setState({
-                          imgPreviewModal: true,
-                        })
-                      }
-                      style={{ width: "100%" }}
-                      src={post.image}
-                      alt="post-image"
-                    />
-                  )}
 
-                  {/* <PostImage postId={post._id} /> */}
-                </Col>
+                <>
+                  <Col md={12}>
+                    <p className="post-text float-left">{post.text}</p>
+                  </Col>
+                  <Col md={12}>
+                    {post.image && (
+                      <img
+                        className="post-img"
+                        onClick={() =>
+                          this.setState({
+                            imgPreviewModal: true,
+                          })
+                        }
+                        style={{ width: "100%" }}
+                        src={post.image}
+                        alt="post-image"
+                      />
+                    )}
+
+                    {/* <PostImage postId={post._id} /> */}
+                  </Col>
+                </>
+
                 <Col md={12} className="icon-container d-flex flex-row">
                   {/* //*ActionButtons::::::(the button to send the comment is here) */}
                   {this.props.post && (

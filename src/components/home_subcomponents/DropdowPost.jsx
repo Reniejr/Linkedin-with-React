@@ -32,6 +32,7 @@ class DropdownPost extends Component {
           toggle={() => this.showEditModal()}
           postId={this.props.post._id}
           getPosts={getPosts}
+          increasePostSize={this.props.increasePostSize}
         />
         <PostImage
           post={this.props.post}
