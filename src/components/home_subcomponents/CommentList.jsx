@@ -93,6 +93,10 @@ class CommentList extends React.Component {
     }
   }
 
+  editHandler = async (e) => {
+    console.log(e.currentTarget.id);
+  };
+
   render() {
     // console.log(this.props.postId);
     let body;
@@ -156,6 +160,7 @@ class CommentList extends React.Component {
                       drop={this.state.dropdown}
                       thisComment={comment._id}
                       deletehandler={this.commentDelete}
+                      editHandler={this.editHandler}
                       dropdownList={this.state.dropdownList}
                     />
                   }
