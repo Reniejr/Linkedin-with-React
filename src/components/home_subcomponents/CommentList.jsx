@@ -3,11 +3,9 @@ import { ListGroup, Badge, Button, Row, Col, Dropdown } from "react-bootstrap";
 import { Spinner, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { AiFillEdit } from "react-icons/ai";
-import { TiDelete } from "react-icons/ti";
+
 import CommentDropDown from "./CommentDropDown";
-//STYLE
-import "../css/comment-drop.css";
+
 const { REACT_APP_BASE_URL } = process.env;
 
 class CommentList extends React.Component {
@@ -23,8 +21,15 @@ class CommentList extends React.Component {
     errorMessage: false,
   };
 
-  showDropdown = () => {
-    this.setState({ dropdown: !this.state.dropdown });
+  showDropdown = idComment => {
+    if (idComment === this.state.ourComments[0]) {
+      console.log(idComment);
+
+      //this set the dropdown truw or false
+      this.setState({ dropdown: !this.state.dropdown });
+    } else {
+      this.setState({ dropdown: this.state.dropdown });
+    }
   };
 
   //!BAD API THIS IS EVIL!!!!!!!!!!::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -75,34 +80,36 @@ class CommentList extends React.Component {
   };
 
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //*DELETE
+  commentDelete = async e => {
+    let id = e.currentTarget.id;
+    try {
+      let response = await fetch(`${REACT_APP_BASE_URL}/${id}`, {
+        method: "DELETE",
+        headers: new Headers({
+          "Content-type": "application/json",
+        }),
+      });
 
-  //   handleDelete = async e => {
-  //     let id = e.currentTarget.id;
-  //     try {
-  //       let response = await fetch(`${REACT_APP_BASE_URL}/` + `${id}`, {
-  //         method: "DELETE",
-  //         //   headers: new Headers({
-  //         //     Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
-  //         //   }),
-  //       });
-
-  //       if (response.ok) {
-  //         let filteredComments = this.state.ourComments.filter(
-  //           comment => comment._id !== id
-  //         );
-  //         this.setState({
-  //           ourComments: filteredComments,
-  //           isloading: false,
-  //           deletedSize: this.state.deletedSize + 1,
-  //         });
-  //       } else {
-  //         alert("something went wrong :(");
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //       this.setState({ isLoading: false, errorMessage: true });
-  //     }
-  //   };
+      if (response.ok) {
+        let filteredComments = this.state.ourComments.filter(
+          comment => comment._id !== id
+        );
+        this.setState({
+          ourComments: filteredComments,
+          isloading: false,
+          deletedSize: this.state.deletedSize + 1,
+        });
+        alert("The comment has been succesfully deleted!");
+      } else {
+        alert("something went wrong, the comment has not be canceled 😢");
+      }
+    } catch (err) {
+      console.log(err);
+      this.setState({ isLoading: false, errorMessage: true });
+    }
+  };
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   componentWillUnmount() {
     this.getCommentsFromOurApi();
@@ -126,6 +133,8 @@ class CommentList extends React.Component {
       body = (
         <div className="mb-5">
           {this.state.ourComments.map((comment, index) => {
+            const idComment = comment._id;
+
             return (
               <div className="d-flex flex-row">
                 {/* <Link to={`/profile/${this.props.userId}`}> */}
@@ -153,8 +162,7 @@ class CommentList extends React.Component {
                       </Col>
 
                       <Col className={this}>
-                        {/* <div onClick={() => this.showDropdown()}> */}
-                        <div onClick={console.log(EventTarget.name)}>
+                        <div onClick={() => this.showDropdown(idComment)}>
                           <HiOutlineDotsHorizontal
                             style={{ cursor: "pointer" }}
                           />
@@ -169,23 +177,18 @@ class CommentList extends React.Component {
                       {comment.text}
                     </p>
                   </ListGroup.Item>
-                  <div className=" drop-comment-container d-flex align-item-end">
+                  {
                     <CommentDropDown
-                      className="comment-dropdown d-flex flex-column align-items-end"
-                      show={this.state.dropdown}
-                    >
-                      <ul>
-                        <li className="d-flex">
-                          <AiFillEdit />
-                          <span className="pl-2 py-1">Edit</span>
-                        </li>
-                        <li className="d-flex">
-                          <TiDelete />
-                          <span className="pl-1 bottom-1">Delete</span>
-                        </li>
-                      </ul>
-                    </CommentDropDown>
-                  </div>
+                      style={{
+                        width: "100px",
+                      }}
+                      className=" drop-comment-container d-flex align-items-end p-0  rounded-lg "
+                      show={e => this.showDropdown(e)} //mettere anche index
+                      drop={this.state.dropdown}
+                      thisComment={comment._id}
+                      deletehandler={this.props.deletehandler}
+                    />
+                  }
                 </ListGroup>
               </div>
             );

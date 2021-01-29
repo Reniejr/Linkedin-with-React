@@ -58,6 +58,7 @@ class PostContent extends Component {
       console.log(err);
     }
   };
+
   handleComment = () => {
     this.setState({
       showComment: !this.state.showComment,
@@ -87,6 +88,53 @@ class PostContent extends Component {
       this.setState({ addComment });
     }
   };
+
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  //*TO DELETE THE COMMENT FROM THE FIELD
+  //* Go to the submitOurComment function()
+  // handleDelete = e => {
+  //   if (e) {
+  //     //*deleteOurComment
+  //     this.commentDelete();
+  //   } else {
+  //     let addComment = { ...this.state.addComment };
+  //     let currentId = e.currentTarget.name;
+
+  //     //   console.log(e.currentTarget.value);
+
+  //     addComment[currentId] = e.currentTarget.value;
+
+  //     this.setState({ addComment });
+  //   }
+  // };
+
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  // //*DELETE
+  // commentDelete = async e => {
+  //   let id = e.currentTarget.id;
+  //   try {
+  //     let response = await fetch(`${REACT_APP_BASE_URL}/${id}`, {
+  //       method: "DELETE",
+  //       headers: new Headers({
+  //         "Content-type": "application/json",
+  //       }),
+  //     });
+
+  //     if (response.ok) {
+  //       let filteredComments = this.state.ourComments.filter(
+  //         comment => comment._id !== id
+  //       );
+  //       this.setState({});
+  //       alert("The comment has been succesfully deleted!");
+  //     } else {
+  //       alert("something went wrong, the comment has not be canceled 😢");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //     this.setState({ isLoading: false, errorMessage: true });
+  //   }
+  // };
+  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -182,7 +230,6 @@ class PostContent extends Component {
     // this.getPostImage();
   }
   render() {
-
     const { post, getPosts } = this.props;
 
     return (
@@ -277,6 +324,7 @@ class PostContent extends Component {
                     <CommentList
                       fetchComment={this.state.fetchComment}
                       submittedSize={this.state.submittedSize}
+                      deletehandler={this.handleDelete}
                       postId={post._id}
                     />
                   </Col>

@@ -1,6 +1,27 @@
 .drop-comment-container {
-  padding: 10px 20px;
   background-color: white;
-  display: flex;
-  justify-content: flex-end;
+
+  flex-direction: column !important;
+  position: relative;
+  right: -300px;
+  top: -40px;
+
+  border-radius: 8px;
+  width: 100px;
+  height: 60px;
+}
+
+.comment-button {
+  padding: 50px;
+  padding: 20px 30px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.comment-button:hover {
+  background-color: rgb(224, 224, 224);
+}
+.comment-button:active {
+  background-color: rgb(213, 213, 213);
 }
