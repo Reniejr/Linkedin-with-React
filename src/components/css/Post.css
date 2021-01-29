@@ -141,8 +141,3 @@
 .comment-user-name {
   color: rgba(0, 0, 0, 0.6) !important;
 }
-
-.comment-drop {
-  background-color: red;
-  list-style-type: none;
-}

@@ -8,32 +8,6 @@
   margin-top: 60px;
 }
 
-.linkedin-nav {
-  width: 100%;
-  margin: 0;
-  height: 50px;
-  position: fixed;
-  top: 0;
-  background-color: #f8f9fa;
-  z-index: 10;
-}
-
-nav {
-  height: 50px;
-}
-
-.navnavbar {
-  min-height: auto !important;
-  padding: 0.2rem;
-}
-
-#navbarSupportedContent {
-  height: 100%;
-  margin: 0;
-  margin-top: 0 !important;
-  align-items: center;
-}
-
 .col-md-1,
 .col-md-4,
 .col-md-7 {
@@ -60,20 +34,6 @@ nav {
   width: 100%;
 }
 
-.nav-icons {
-  font-size: 1.25rem;
-  color: rgb(80, 80, 80);
-}
-.nav-icons:hover {
-  color: black;
-}
-.nav-icon-text {
-  margin-top: 2px;
-  font-size: 13px !important;
-}
-.nav-icon-text:hover {
-  text-decoration: underline;
-}
 .footerbutton {
   background-color: white !important;
   border-radius: 0;
@@ -114,22 +74,6 @@ nav {
   margin-top: 0.11rem !important;
 }
 
-.navul {
-  list-style-type: none;
-  margin: 0;
-}
-
-.navli {
-  display: inline;
-  margin: 19px;
-}
-.navnavbar {
-  align-items: center;
-  display: flex;
-  margin: 0 auto;
-  min-height: 100%;
-  width: 1128px;
-}
 .card-header {
   background: rgb(136, 140, 162);
   background: linear-gradient(

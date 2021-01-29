@@ -1,7 +1,7 @@
 export const getUser = async (userId) => {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/profiles/${userId}`),
         result = await response.json()
-    console.log(result)
+    // console.log(result)
     return result
 }
 export const getAllProfiles = async (currentUser) => {

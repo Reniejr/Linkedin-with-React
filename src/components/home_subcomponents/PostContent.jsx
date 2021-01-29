@@ -26,12 +26,16 @@ class PostContent extends Component {
 
     showComment: false,
     fetchComment: false,
-
+    post: null,
     user: {},
     postImage: null,
     imgPreviewModal: false,
     isDeleted: false,
   };
+
+  componentDidMount() {
+    this.setState({ post: this.props.post });
+  }
 
   getProfileInfo = async () => {
     const userId = JSON.parse(window.localStorage.getItem("userId"));
@@ -55,10 +59,9 @@ class PostContent extends Component {
         this.setState({ addComment });
       });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
-
   handleComment = () => {
     this.setState({
       showComment: !this.state.showComment,
@@ -69,7 +72,7 @@ class PostContent extends Component {
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   //*TO UPDATE THE COMMENT FIELD
   //* Go to the submitOurComment function()
-  updateCommentField = e => {
+  updateCommentField = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
       e.preventDefault();
 
@@ -90,55 +93,6 @@ class PostContent extends Component {
   };
 
   //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  //*TO DELETE THE COMMENT FROM THE FIELD
-  //* Go to the submitOurComment function()
-  // handleDelete = e => {
-  //   if (e) {
-  //     //*deleteOurComment
-  //     this.commentDelete();
-  //   } else {
-  //     let addComment = { ...this.state.addComment };
-  //     let currentId = e.currentTarget.name;
-
-  //     //   console.log(e.currentTarget.value);
-
-  //     addComment[currentId] = e.currentTarget.value;
-
-  //     this.setState({ addComment });
-  //   }
-  // };
-
-  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  // //*DELETE
-  // commentDelete = async e => {
-  //   let id = e.currentTarget.id;
-  //   try {
-  //     let response = await fetch(`${REACT_APP_BASE_URL}/${id}`, {
-  //       method: "DELETE",
-  //       headers: new Headers({
-  //         "Content-type": "application/json",
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       let filteredComments = this.state.ourComments.filter(
-  //         comment => comment._id !== id
-  //       );
-  //       this.setState({});
-  //       alert("The comment has been succesfully deleted!");
-  //     } else {
-  //       alert("something went wrong, the comment has not be canceled 😢");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //     this.setState({ isLoading: false, errorMessage: true });
-  //   }
-  // };
-  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-  //*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-  //*-------------POST--------------------
   //*TO SUBMIT THE COMMENTS
   submitOurComment = async () => {
     // e.preventDefault();
@@ -180,48 +134,6 @@ class PostContent extends Component {
       console.log(e); // Error
     }
   };
-
-  //*-------------PUT--------------------
-  // submitOurComment = async () => {
-  //   // e.preventDefault();
-  //   const { user } = this.props.auth0;
-
-  //   let userId = user.sub.slice(6);
-  //   console.log(userId);
-
-  //   try {
-  //     let response = await fetch(
-  //       // `${process.env.REACT_APP_BASE_URL}/comments/${this.state.comments}`,
-  //       {
-  //         method: "POST",
-  //         body: JSON.stringify(this.state.addComment),
-  //         headers: new Headers({
-  //           "Content-Type": "application/json",
-  //         }),
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       console.log(response);
-  //       // alert("Comment saved!");
-  //       this.setState({
-  //         addComment: {
-  //           text: "",
-  //           image: "",
-  //           rate: 1,
-  //           elementId: this.props.post._id,
-  //         },
-  //         errMessage: "",
-  //         submittedSize: this.state.submittedSize + 1,
-  //       });
-  //     } else {
-  //       alert("something went wrong here");
-  //       let error = await response.json();
-  //     }
-  //   } catch (e) {
-  //     console.log(e); // Error
-  //   }
-  // };
 
   //   *end::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -303,10 +215,14 @@ class PostContent extends Component {
                 </Col>
                 <Col md={12} className="icon-container d-flex flex-row">
                   {/* //*ActionButtons::::::(the button to send the comment is here) */}
-                  <ActionButtons
-                    onClick={this.updateCommentField}
-                    onComment={this.handleComment}
-                  />
+                  {this.props.post && (
+                    <ActionButtons
+                      reacts={this.props.post.reactions}
+                      onClick={this.updateCommentField}
+                      onComment={this.handleComment}
+                      postId={this.props.post._id}
+                    />
+                  )}
                 </Col>
 
                 <div className={this.state.showComment ? "d-block" : "d-none"}>
@@ -324,7 +240,6 @@ class PostContent extends Component {
                     <CommentList
                       fetchComment={this.state.fetchComment}
                       submittedSize={this.state.submittedSize}
-                      deletehandler={this.handleDelete}
                       postId={post._id}
                     />
                   </Col>

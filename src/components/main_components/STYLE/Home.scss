@@ -1,0 +1,40 @@
+@import '../../css/SASS/Compatibilites';
+
+#home-page{
+    .container{
+        .row{
+            justify-content: space-between;
+            overflow-x: hidden;
+            .left-side, .right-side{
+                width: 18%;
+                margin: 0 1%;
+                overflow: hidden;
+                @include transition(margin, 1s, ease);
+            }
+            .main-feed{
+                @include transition(width, 1s, ease);
+                width: 58%;
+                margin: 0 1%;
+                // transition-delay: .1s;
+            }
+        }
+    }
+}
+@media screen and (max-width: 1024px) {
+    #home-page{
+        .container{
+            .row{
+                .left-side{
+                    margin-left: -200vh;
+                }
+                .right-side{
+                    margin-right: -200vh;
+                }
+                .main-feed{
+                    width: 100%;
+                }
+
+            }
+        }
+    }
+}
