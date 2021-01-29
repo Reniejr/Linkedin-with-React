@@ -1,5 +1,6 @@
 import React from "react";
 import { Col, Container, Row, Dropdown, DropdownButton } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "../css/TopHeader.css";
 import striveLogo from "../images/strive-logo.jpeg";
 import EditProfileModal from "./EditProfileModal";
@@ -9,6 +10,12 @@ import ProfileImage from "./ProfileImage";
 import ImagePreviewModal from "../main_components/ImagePreviewModal";
 class TopHeader extends React.Component {
   state = { showModal: false, modalShow: false, imgPreviewModal: false };
+
+  downloadExp = () => {
+    window.location.assign(
+      `${process.env.REACT_APP_BASE_URL1}/experiences/${this.props.currentId}/experiences/csv`
+    );
+  };
 
   render() {
     const { user } = this.props;
@@ -142,9 +149,9 @@ class TopHeader extends React.Component {
               variant="success"
               title="More"
             >
-              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+              <Dropdown.Item onClick={() => this.downloadExp()}>
+                Get Your Experiences
+              </Dropdown.Item>
             </DropdownButton>
           </div>
         </div>
