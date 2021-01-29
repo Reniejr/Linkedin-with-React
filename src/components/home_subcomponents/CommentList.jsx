@@ -23,8 +23,6 @@ class CommentList extends React.Component {
 
   showDropdown = idComment => {
     if (idComment === this.state.ourComments[0]) {
-      console.log(idComment);
-
       //this set the dropdown truw or false
       this.setState({ dropdown: !this.state.dropdown });
     } else {
