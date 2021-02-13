@@ -18,6 +18,7 @@ import MsgPage from "./components/Messaging_Component/MsgPage";
 import ProtectedRoute from "./components/authComponents/ProtectedRoute";
 import NotRegistered from "./components/authComponents/NotRegistered";
 import LinkedinNav from "./components/main_components/LinkedinNav/LinkedinNav";
+import MsgPageSocket from './components/Messaging_Component/MsgSocket/MsgPageSocket'
 
 class App extends React.Component {
   state = {
@@ -97,7 +98,8 @@ class App extends React.Component {
             render={(props) => <NetworkPage userList={this.state.userList} setCurrentId={this.setCurrentId} setUsers={ this.setUserList}/>}
           />
           <Route path="/jobs" component={JobsPage} />
-          <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={this.state.userList} totalNot={ this.totalNot}/>} />
+          {/* <Route path="/message/:id" render={(props) => <MsgPage {...props} selectedUsers={this.state.userList} totalNot={ this.totalNot}/>} /> */}
+          <Route path="/message/:id" render={(props) => <MsgPageSocket {...props} selectedUsers={this.state.userList} totalNot={ this.totalNot}/>} />
         </Router>
       </div>
     );
