@@ -58,7 +58,7 @@ class TopHeader extends React.Component {
             <Col md={12} className="images-container">
               <img
                 className="header-img"
-                src="https://media-exp1.licdn.com/dms/image/C4D16AQGmIeY20UG-TA/profile-displaybackgroundimage-shrink_200_800/0/1601315645175?e=1612396800&v=beta&t=AbFSYaklOIuXGuLEY-usz4EZRg1rbhXC_jLq1X22GDI"
+                src="https://res.cloudinary.com/waliwalo/image/upload/v1618221792/1612205960672_slpvxa.jpg"
                 alt="top-image"
               />
               <img
